@@ -1,4 +1,4 @@
-# SETUP
+# Setup
 
 Place these scripts in a folder and add that folder to your path e.g.
 
@@ -18,13 +18,17 @@ chmod u+x {qcat,qhead,get-output-file,qtail,show-past-jobs,qusr,lessnew,watchnew
 
 You should now be able to run the scripts from anywhere when on the cluster.
 
-All the scripts should explain usage when run with `help' as the argument; for example:
+All the scripts should explain usage when run with 'help' as the argument; for example:
 qcat help
 
 The colurs used in the show-past-job script can be changed -- the comments in the script explain how to do so.
 
+# Contributing
+Feel free to add any useful scripts you develop.
+**Please make sure that any scripts you add print usage information when called with 'help' as the first argument** -- see the current scripts for examples of how to do this.
 
-# CHANGELOG
+### Changelog
+The log below shows the history before moving to git.
 * Update 2017-03-05:
    - Move taskid to seperate column in show-past-jobs; tidy up sort key for show-past-jobs
 
