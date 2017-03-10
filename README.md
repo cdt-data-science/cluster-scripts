@@ -12,7 +12,9 @@ source ~/.bash_profile
 ```
 
 If instead of cloning the repo, you copied the files to a directory manually, make sure they are executable:
-chmod u+x {qcat,qhead,get-output-file,qtail,show-past-jobs}
+```{bash}
+chmod u+x {qcat,qhead,get-output-file,qtail,show-past-jobs,qusr,lessnew,watchnew}
+```
 
 You should now be able to run the scripts from anywhere when on the cluster.
 
