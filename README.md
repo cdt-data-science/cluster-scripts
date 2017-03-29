@@ -11,6 +11,13 @@ echo "export PATH=/home/$USER/git/cluster-scripts:\$PATH" >> ~/.bash_profile
 source ~/.bash_profile
 ```
 
+To enable autocompletion of job names/numbers, also source the `job-id-completion.sh` script from your bash_profile.
+
+```{bash}
+echo "source /home/$USER/git/cluster-scripts/job-id-completion.sh" >> ~/.bash_profile
+source ~/.bash_profile
+```
+
 If instead of cloning the repo, you copied the files to a directory manually, make sure they are executable:
 ```{bash}
 chmod u+x {qcat,qhead,get-output-file,qtail,show-past-jobs,qusr,lessnew,watchnew}
