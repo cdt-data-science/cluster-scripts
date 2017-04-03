@@ -1,6 +1,6 @@
 #! /bin/bash
 
-if [ $# -ne 1 ] || [ "$1" == "help" ] ; then
+if [ $# -eq 0 ] || [ "$1" == "help" ] ; then
   echo "Usage: $0 JOB_ID [HEAD_ARGS]"
   echo "    Runs head on the output file of a running job."
   echo "Arguments:"
