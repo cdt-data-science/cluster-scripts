@@ -12,5 +12,5 @@ fi
 
 ntail=20
 filename=`ls -t "$1"/* | head -1`
-less $filename
+less -R $filename
 
