@@ -78,13 +78,10 @@ HOSTNAMES=(`echo "$PAST_JOBS" | grep "^hostname" |  awk '{print $2}'`)
 
 # Loop through extracted info and format it for printing
 OUT=''
-HEADER="Showing past jobs for user ${LOOKUP_USER}:\nJob # \tTask ID \tName \t\t    Exit Status  Host \t\tDuration \t Sub Time"
+HEADER="Showing past jobs for user ${LOOKUP_USER}:\nJob # \tTask ID     Name     \t    Exit Status  \tHost \t\tDuration \t Sub Time"
 for i in `seq 0	"$((${#NAMES[@]}-1))"`;	do
         # Colour code the exit status:
         EXIT_STATUS=`echo "${EXIT_STATUSES[$i]}" | tr -d '[:space:]'`
-        if [[ "$EXIT_STATUS" == "0" ]] ; then EXIT_STATUS="\e[${SUCCEEDED_CC}m$EXIT_STATUS\e[m"; fi
-        if [[ "$EXIT_STATUS" == "1" ]] ; then EXIT_STATUS="\e[${FAILED_CC}m$EXIT_STATUS\e[m"; fi
-        if [[ "${EXIT_STATUS[@]:0:3}" == "137" ]] ; then EXIT_STATUS="${EXIT_STATUS[@]:4:6}"; fi
         # If an array job, get the taskid:
         if [[ "${TASKIDS[$i]}" == "undefined" ]] ; then TASK_ID=""; else TASK_ID="${TASKIDS[$i]}"; fi
         # Extract the first section of the hostname:
@@ -96,10 +93,16 @@ for i in `seq 0	"$((${#NAMES[@]}-1))"`;	do
         if [[ ${#NAME} -gt 20 ]] ; then NAME="${NAME:0:7}...${NAME: -7}"; fi
         if [[ ${#NAME} -lt 8 ]] ; then NAME="${NAME}\t"; fi
         if [[ ${#NAME} -lt 16 ]] ; then NAME="${NAME}\t"; fi
-        OUT="$OUT\n${NUMBERS[$i]}\t${TASK_ID}\t${NAME}\t${EXIT_STATUS}\t${HOSTNAME[0]}\t${DURATION}\t${QSUB_TIMES[$i]}" 
+        if [[ ${#EXIT_STATUS} -lt 8 ]] ; then EXIT_STATUS="${EXIT_STATUS}\t"; fi
+        if [[ ${#EXIT_STATUS} -lt 16 ]] ; then EXIT_STATUS="${EXIT_STATUS}\t"; fi
+        if [[ ${#DURATION} -lt 8 ]] ; then DURATION="${DURATION}\t" ; fi
+        if [[ ${#DURATION} -lt 16 ]] ; then DURATION="${DURATION}\t" ; fi
+        if [[ "$EXIT_STATUS" == "0\t\t" ]] ; then EXIT_STATUS="\e[${SUCCEEDED_CC}m$EXIT_STATUS\e[m"; fi
+        if [[ "$EXIT_STATUS" == "1\t\t" ]] ; then EXIT_STATUS="\e[${FAILED_CC}m$EXIT_STATUS\e[m"; fi
+        OUT="$OUT\n${NUMBERS[$i]}\t${TASK_ID}\t${NAME}\t${EXIT_STATUS}${HOSTNAME[0]}\t${DURATION}${QSUB_TIMES[$i]}" 
 done
 
 # Output everything sorted by job number:
 echo -e "$HEADER"
-echo "------------------------------------------------------------------------------"
+echo "--------------------------------------------------------------------------------------------------"
 echo -e	$OUT | sort -k 1,1nr -k 2,2n
