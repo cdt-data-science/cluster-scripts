@@ -10,11 +10,12 @@ FAILED_CC="1;31"
 SUCCEEDED_CC="1;32"
 
 if [[ "$1" == "help" ]] ; then
-    echo "Usage: show-past-jobs [-e] [-d DAYS] [-u USER]"
+    echo "Usage: show-past-jobs [-e] [-d DAYS] [-u USER] [-V]"
     echo "    [-e]  : (Optional) select jobs by end time rather than start time."
     echo "    [-d DAYS]: (Optional) Integer defining how many days back to look."
     echo "            Defaults to 7."
     echo "    [-u USER]: (Optional) Requires an argument for DAYS. Defaults to current user."
+    echo "    [-V]: (Optional) Verbose. Does not shorten job names."
     exit
 fi
 
@@ -34,6 +35,10 @@ do
         ;;
       -e)
         END_TIME="True"
+        shift
+        ;;
+      -V)
+        VERBOSE="True"
         shift
         ;;
       *)
@@ -93,7 +98,7 @@ for i in `seq 0	"$((${#NAMES[@]}-1))"`;	do
         convert_from_seconds $((`date --date="${END_TIMES[$i]}" +%s` - `date --date="${START_TIMES[$i]}" +%s`))
         # Limit the length of the name to 20 characters:
         NAME=${NAMES[$i]}
-        if [[ ${#NAME} -gt 20 ]] ; then NAME="${NAME:0:7}...${NAME: -7}"; fi
+        if [[ ${#NAME} -gt 20 ]] && [[ -z "$VERBOSE" ]] ; then NAME="${NAME:0:7}...${NAME: -7}"; fi
         if [[ ${#NAME} -lt 8 ]] ; then NAME="${NAME}\t"; fi
         if [[ ${#NAME} -lt 16 ]] ; then NAME="${NAME}\t"; fi
         if [[ ${#DURATION} -lt 8 ]] ; then DURATION="${DURATION}\t" ; fi
