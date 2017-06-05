@@ -51,11 +51,12 @@ convert_from_seconds() {
     SECONDS=$(($SECONDS - $HOURS * 3600))
     MINUTES=$(($SECONDS / 60))
     SECONDS=$(($SECONDS - $MINUTES * 60))
-    DURATION=''
-    if [[ $DAYS -gt 0 ]] ; then DURATION="$DURATION${DAYS}d "; fi
-    if [[ $HOURS -gt 0 ]] ; then DURATION="$DURATION${HOURS}h "; fi
-    if [[ $MINUTES -gt 0 ]] ; then DURATION="$DURATION${MINUTES}m "; fi
-    DURATION="$DURATION${SECONDS}s"
+    DURATION=`printf "%02d:%02d:%02d:%02d" $DAYS $HOURS $MINUTES $SECONDS`
+#    DURATION=''
+#    if [[ $DAYS -gt 0 ]] ; then DURATION="$DURATION${DAYS}d "; fi
+#    if [[ $HOURS -gt 0 ]] ; then DURATION="$DURATION${HOURS}h "; fi
+#    if [[ $MINUTES -gt 0 ]] ; then DURATION="$DURATION${MINUTES}m "; fi
+#    DURATION="$DURATION${SECONDS}s"
 }
 
 # Look up the target jobs and pull out the desired info
@@ -69,7 +70,7 @@ NUMBERS=(`echo "$PAST_JOBS" | grep "^jobnumber" | awk '{print $2}'`)
 TASKIDS=(`echo "$PAST_JOBS" | grep "^taskid" | awk '{print $2}'`)
 OLD_IFS=$IFS
 IFS=$'\n'
-QSUB_TIMES=(`echo "$PAST_JOBS" | grep "^qsub_time" | cut -d ' ' -f 2-`)
+QSUB_TIMES=(`echo "$PAST_JOBS" | grep "^qsub_time" | cut -d ' ' -f 2- | awk '{print $2 " " $3 " " $4 }'`)
 START_TIMES=(`echo "$PAST_JOBS" | grep "^start_time" | cut -d ' ' -f 2-`)
 END_TIMES=(`echo "$PAST_JOBS" | grep "^end_time" | cut -d ' ' -f 2-`)
 EXIT_STATUSES=(`echo "$PAST_JOBS" | grep "^exit_status" | cut -d ' ' -f 2-`)    
@@ -78,10 +79,12 @@ HOSTNAMES=(`echo "$PAST_JOBS" | grep "^hostname" |  awk '{print $2}'`)
 
 # Loop through extracted info and format it for printing
 OUT=''
-HEADER="Showing past jobs for user ${LOOKUP_USER}:\nJob # \tTask ID     Name     \t    Exit Status  \tHost \t\tDuration \t Sub Time"
+HEADER="Showing past jobs for user ${LOOKUP_USER}:\nJob # \tTask    Name  \t\t    Exit Status  Host \t\tDuration \t Sub Time"
 for i in `seq 0	"$((${#NAMES[@]}-1))"`;	do
         # Colour code the exit status:
-        EXIT_STATUS=`echo "${EXIT_STATUSES[$i]}" | tr -d '[:space:]'`
+        EXIT_STATUS=`echo "${EXIT_STATUSES[$i]}" | tr -d '[:space:]' | head -c 3`
+        if [[ "$EXIT_STATUS" == "0" ]] ; then EXIT_STATUS="\e[${SUCCEEDED_CC}m$EXIT_STATUS\e[m"; fi
+        if [[ "$EXIT_STATUS" == "1" ]] ; then EXIT_STATUS="\e[${FAILED_CC}m$EXIT_STATUS\e[m"; fi
         # If an array job, get the taskid:
         if [[ "${TASKIDS[$i]}" == "undefined" ]] ; then TASK_ID=""; else TASK_ID="${TASKIDS[$i]}"; fi
         # Extract the first section of the hostname:
@@ -93,13 +96,9 @@ for i in `seq 0	"$((${#NAMES[@]}-1))"`;	do
         if [[ ${#NAME} -gt 20 ]] ; then NAME="${NAME:0:7}...${NAME: -7}"; fi
         if [[ ${#NAME} -lt 8 ]] ; then NAME="${NAME}\t"; fi
         if [[ ${#NAME} -lt 16 ]] ; then NAME="${NAME}\t"; fi
-        if [[ ${#EXIT_STATUS} -lt 8 ]] ; then EXIT_STATUS="${EXIT_STATUS}\t"; fi
-        if [[ ${#EXIT_STATUS} -lt 16 ]] ; then EXIT_STATUS="${EXIT_STATUS}\t"; fi
         if [[ ${#DURATION} -lt 8 ]] ; then DURATION="${DURATION}\t" ; fi
         if [[ ${#DURATION} -lt 16 ]] ; then DURATION="${DURATION}\t" ; fi
-        if [[ "$EXIT_STATUS" == "0\t\t" ]] ; then EXIT_STATUS="\e[${SUCCEEDED_CC}m$EXIT_STATUS\e[m"; fi
-        if [[ "$EXIT_STATUS" == "1\t\t" ]] ; then EXIT_STATUS="\e[${FAILED_CC}m$EXIT_STATUS\e[m"; fi
-        OUT="$OUT\n${NUMBERS[$i]}\t${TASK_ID}\t${NAME}\t${EXIT_STATUS}${HOSTNAME[0]}\t${DURATION}${QSUB_TIMES[$i]}" 
+        OUT="$OUT\n${NUMBERS[$i]}\t${TASK_ID}\t${NAME}\t${EXIT_STATUS}\t${HOSTNAME[0]}\t${DURATION}${QSUB_TIMES[$i]}" 
 done
 
 # Output everything sorted by job number:
