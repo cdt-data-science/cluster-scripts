@@ -10,12 +10,20 @@ FAILED_CC="1;31"
 SUCCEEDED_CC="1;32"
 
 if [[ "$1" == "help" ]] ; then
-    echo "Usage: show-past-jobs [-e] [-d DAYS] [-u USER] [-V]"
+    echo "Usage: show-past-jobs [-e] [-d DAYS] [-u USER] [-V] [--filter 'COL=EXP,...']"
     echo "    [-e]  : (Optional) select jobs by end time rather than start time."
     echo "    [-d DAYS]: (Optional) Integer defining how many days back to look."
     echo "            Defaults to 7."
     echo "    [-u USER]: (Optional) Requires an argument for DAYS. Defaults to current user."
     echo "    [-V]: (Optional) Verbose. Does not shorten job names."
+    echo "    [--filter COL=EXP,...]: (Optional) Only show jobs that match expression EXP in column COL."
+    echo "                          Multiple criteria should be seperated by commas."
+    echo "                          Valid column names are:"
+    echo "                              'id' -- Job # "
+    echo "                              'task' -- Task "
+    echo "                              'name' -- Name "
+    echo "                              'host' -- Host "
+    echo "                          The expression EXP should be an awk regular expression."
     exit
 fi
 
@@ -41,11 +49,29 @@ do
         VERBOSE="True"
         shift
         ;;
+      --filter)
+        filter_func="$2"
+        shift 2
+        ;;
       *)
         break
         ;;
     esac
 done
+
+make_filter() {
+    # Change names into column numbers:
+    filters="$1"
+    filters="${filters//id=/\$1=}"
+    filters="${filters//task=/\$2=}"
+    filters="${filters//name=/\$3=}"
+    filters="${filters//exit=/\$4=}"
+    filters="${filters//host=/\$5=}"
+    filters="${filters//=/~/}"
+    filters="${filters//,// && }/"
+#'BEGIN{ FPAT = "([[:space:]]*[^[:space:]]+)";OFS=""}
+   # OUT=$(echo  "$1" | awk -v filters="$filters" "$filters") #{if (filters) {print}}')
+}
 
 convert_from_seconds() {
     # Converts number of seconds to useful format
@@ -91,7 +117,7 @@ for i in `seq 0	"$((${#NAMES[@]}-1))"`;	do
         if [[ "$EXIT_STATUS" == "0" ]] ; then EXIT_STATUS="\e[${SUCCEEDED_CC}m$EXIT_STATUS\e[m"; fi
         if [[ "$EXIT_STATUS" == "1" ]] ; then EXIT_STATUS="\e[${FAILED_CC}m$EXIT_STATUS\e[m"; fi
         # If an array job, get the taskid:
-        if [[ "${TASKIDS[$i]}" == "undefined" ]] ; then TASK_ID=""; else TASK_ID="${TASKIDS[$i]}"; fi
+        if [[ "${TASKIDS[$i]}" == "undefined" ]] ; then TASK_ID="-"; else TASK_ID="${TASKIDS[$i]}"; fi
         # Extract the first section of the hostname:
         HOSTNAME=(${HOSTNAMES[$i]//./ })
         # Change the duration to a useful format:
@@ -109,4 +135,9 @@ done
 # Output everything sorted by job number:
 echo -e "$HEADER"
 echo "--------------------------------------------------------------------------------------------------"
-echo -e	$OUT | sort -k 1,1nr -k 2,2n
+if [[ -n "$filter_func" ]] ; then
+    make_filter "$filter_func"
+    echo -e	$OUT | sort -k 1,1nr -k 2,2n | awk "$filters"
+else
+    echo -e	$OUT | sort -k 1,1nr -k 2,2n
+fi
