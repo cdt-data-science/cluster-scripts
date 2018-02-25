@@ -23,6 +23,7 @@ print_help() {
     echo "                              'id' -- Job # "
     echo "                              'task' -- Task "
     echo "                              'name' -- Name "
+    echo "                              'exit' -- Exit Status "
     echo "                              'host' -- Host "
     echo "                          The expression EXP should be an awk regular expression."
     echo "    [-h|--help]: Print this message."
@@ -124,6 +125,10 @@ END_TIMES=(`echo "$PAST_JOBS" | grep "^end_time" | cut -d ' ' -f 2-`)
 EXIT_STATUSES=(`echo "$PAST_JOBS" | grep "^exit_status" | cut -d ' ' -f 2-`)    
 IFS=$OLD_IFS
 HOSTNAMES=(`echo "$PAST_JOBS" | grep "^hostname" |  awk '{print $2}'`)
+exit_filter=0
+if [[ $filter_func =~ .*exit.* ]] ; then
+    exit_filter=1
+fi
 
 # Loop through extracted info and format it for printing
 OUT=''
@@ -131,8 +136,8 @@ HEADER="Showing past jobs for user ${LOOKUP_USER}:\nJob # \tTask    Name  \t\t  
 for i in `seq 0	"$((${#NAMES[@]}-1))"`;	do
         # Colour code the exit status:
         EXIT_STATUS=`echo "${EXIT_STATUSES[$i]}" | tr -d '[:space:]' | head -c 3`
-        if [[ "$EXIT_STATUS" == "0" ]] ; then EXIT_STATUS="\e[${SUCCEEDED_CC}m$EXIT_STATUS\e[m"; fi
-        if [[ "$EXIT_STATUS" == "1" ]] ; then EXIT_STATUS="\e[${FAILED_CC}m$EXIT_STATUS\e[m"; fi
+        if [[ "$EXIT_STATUS" == "0" ]] && [[ $exit_filter -ne 1 ]] ; then EXIT_STATUS="\e[${SUCCEEDED_CC}m$EXIT_STATUS\e[m"; fi
+        if [[ "$EXIT_STATUS" == "1" ]] && [[ $exit_filter -ne 1 ]] ; then EXIT_STATUS="\e[${FAILED_CC}m$EXIT_STATUS\e[m"; fi
         # If an array job, get the taskid:
         if [[ "${TASKIDS[$i]}" == "undefined" ]] ; then TASK_ID="-"; else TASK_ID="${TASKIDS[$i]}"; fi
         # Extract the first section of the hostname:
