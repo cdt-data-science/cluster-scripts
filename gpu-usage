@@ -1,0 +1,12 @@
+#!/bin/bash
+
+# Count number of GPUs requested by running jobs
+USED=`squeue -t R -o %b | grep -o '[0-9]' | awk ' {s+=$1} END {print s}'`
+
+# Count number of GPUS in nodes marked idle or mix
+USABLE=$(sinfo -t idle,mix -r -N -o %G | grep -o '[0-9]' | awk ' {s+=$1} END {print s}')
+
+# Count number of GPUs in all nodes
+TOTAL=$(sinfo -N -o %G | grep -o '[0-9]' | awk ' {s+=$1} END {print s}')
+
+echo "In Use: ${USED} | Usable: ${USABLE} | Total: ${TOTAL}"
