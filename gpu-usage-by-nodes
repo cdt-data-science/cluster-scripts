@@ -1,0 +1,8 @@
+#!/bin/bash
+
+dt=$(date '+%d/%m/%Y %H:%M:%S');
+this_dir=$(dirname "$0")
+
+for node in `sinfo --format="%n" --noheader`; do
+  echo "${dt},${node},`${this_dir}/gpu-usage -h -n $node`"
+done 
