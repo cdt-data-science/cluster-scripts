@@ -3,6 +3,6 @@
 dt=$(date '+%d/%m/%Y %H:%M:%S');
 this_dir=$(dirname "$0")
 
-for node in `sinfo --format="%n" --noheader`; do
+for node in `sinfo --format="%n" --noheader | sort`; do
   echo "${dt},${node},`${this_dir}/gpu-usage -h -n $node`"
 done 
