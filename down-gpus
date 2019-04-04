@@ -1,0 +1,11 @@
+#!/bin/bash
+down_gpus=''
+down_gpus=`./gpu-usage-by-node -p | awk 'NR==1 {print $0} NR > 1 {if ($6 > $5) print $0}'`
+if [ "${down_gpus}" == "" ]; then
+  echo 'All up!'
+else
+  echo "${down_gpus}"
+  echo ""
+  echo "Full cluster status:"
+  ./cluster-status
+fi
