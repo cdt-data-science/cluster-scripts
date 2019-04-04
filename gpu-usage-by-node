@@ -1,8 +1,45 @@
 #!/bin/bash
 
+nodes=`sinfo --format="%N" --noheader`
+header=false
+pretty=false
+
+print_usage () {
+  cat << EOM
+Usage: $0 [-h] [-p] [-n nodelist] 
+Arguments:
+    -n    (optional) specify nodes, either comma separated list, or summarised.
+          Mirrors slurm command -n usage in sinfo, and -w usage for squeue." 
+    -H    (optional) print header (note that lowercase -h is no-header for gpu-usage)
+    -p    (optional) make output pretty, ignores -H if specified
+
+EOM
+}
+
+while getopts 'n:hHp' flag; do
+  case "${flag}" in
+    n) nodes="${OPTARG}" ;;
+    h) header=false ;;
+    H) header=true ;;
+    p) pretty=true ;;
+    *) print_usage
+       exit ;;
+  esac
+done
+
+
+if [ "$pretty" = true ]; then
+  ./$0 -H -n ${nodes} | column -t -s','
+  exit 0
+fi
+
+node_list=`sinfo --format="%n" --noheader -n ${nodes} | sort`
 dt=$(date '+%d/%m/%Y %H:%M:%S');
 this_dir=$(dirname "$0")
 
-for node in `sinfo --format="%n" --noheader | sort`; do
+if [ "$header" = true ]; then 
+  echo datetime,nodename,in_use,usable,total
+fi
+for node in ${node_list}; do
   echo "${dt},${node},`${this_dir}/gpu-usage -h -n $node`"
 done 
