@@ -54,7 +54,7 @@ while getopts 'n:hp' flag; do
 done
 
 if [ "$pretty" = true ]; then
-  ./$0 -n ${nodes} | column -t -s','
+  $0 -n ${nodes} | column -t -s','
   exit 0
 fi
 

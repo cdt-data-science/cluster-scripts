@@ -29,7 +29,7 @@ done
 
 
 if [ "$pretty" = true ]; then
-  ./$0 -H -n ${nodes} | column -t -s','
+  $0 -H -n ${nodes} | column -t -s','
   exit 0
 fi
 
