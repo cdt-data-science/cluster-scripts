@@ -1,0 +1,4 @@
+#!/bin/bash
+
+squeue --noheader -o %u | sort | uniq -c | awk 'BEGIN{printf "sid,name,nr_jobs\n"} { cmd="finger -s \""$2"\" | awk '\'' NR > 1 {print $2, $3} '\'' "; cmd|getline name; printf "%s,%s,%s\n", $2, name, $1; close(cmd)}' | column -s',' -t
+
