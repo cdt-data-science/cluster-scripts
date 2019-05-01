@@ -1,0 +1,9 @@
+# Prints details of interactive jobs running for longer than a day
+# This is prob better for getting interactive jobs but grep for bash works
+# squeue --Format="jobid,batchflag" | awk 'NR>1 {if ($2==0) print $1}'
+squeue --name=bash |  # Select interactive jobs by assuming jobname is bash
+    grep - |  # Select only jobs running longer than a day
+    awk '{ print $1 }' |  # Get the jobids
+    cut -c1-6 | sort | uniq |  # Get unique list (and handle arrayjobs)
+    xargs -I {} sh -c 'scontrol show JobId={}'  # get all info about each job
+
