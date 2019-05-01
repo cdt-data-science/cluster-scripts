@@ -29,6 +29,18 @@ You should now be able to run the scripts from anywhere when on the cluster.
 
 ## Examples
 
+* Get an interactive session
+```
+(base) [albert]s0816700: interactive
+Doing a --test-only to estimate wait time...
+srun: Job 455329 to start at 2019-05-01T14:56:10 using 1 processors on charles12
+
+Running the following command to get you an interactive session:
+srun --time=01:00:00 --mem=2000 --cpus-per-task=1 --pty bash
+
+(base) [charles12]s0816700: 
+```
+
 * Quickly identify free gpus for use
 ```
 (mg) [albert]s0816700: ./free-gpus 
