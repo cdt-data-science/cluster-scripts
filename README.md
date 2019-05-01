@@ -22,7 +22,7 @@ source ~/.bashrc
 
 If instead of cloning the repo, you copied the files to a directory manually, make sure they are executable:
 ```{bash}
-chmod u+x {cluster-status,down-gpus,free-gpus,gpu-usage,gpu-usage-by-node,whoson} 
+chmod u+x {cluster-status,down-gpus,free-gpus,gpu-usage,gpu-usage-by-node,whoson,jobinfo,longbois,interactive,killmyjobs,onallnodes} 
 ```
 
 You should now be able to run the scripts from anywhere when on the cluster.
