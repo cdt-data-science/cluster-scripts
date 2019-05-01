@@ -1,0 +1,42 @@
+#!/bin/bash
+
+running_only=false
+
+print_usage () {
+  cat << EOM
+Usage: $0 [-n nodelist] [-g] 
+    Kills all your jobs! By default, also kills those you have queued up too.
+    To only kill your running jobs, use the -g flag.
+
+Arguments:
+script    the script to be submitted to slurm via sbatch
+    -n    (optional) specify nodes, either comma separated list, or summarised.
+          Mirrors slurm command -n usage in sinfo, and -w usage for squeue." 
+EOM
+}
+
+while getopts 'n:g' flag; do
+  case "${flag}" in
+    n) nodes="${OPTARG}" ;;
+    g) running_only=true ;;
+    *) print_usage
+       exit 1 ;;
+  esac
+done
+
+if [ "$running_only" = true ]; then
+    if [ -z ${nodes+x} ]; then
+        nodes=`sinfo --format="%N" --noheader`
+    fi
+    echo not killing jobs in queue
+    jobids="$(squeue -u `whoami` --nodelist=${nodes} -o "%i" --noheader)"
+else
+    echo killing jobs in queue as well as running jobs
+    jobids="$(squeue -u `whoami` -o "%i" --noheader)"
+fi
+if [ "${jobids}" = "" ]; then
+    echo "well I would...but you've got no jobs to kill m8"
+else
+    echo killing $jobids
+    parallel 'scancel {}' ::: ${jobids} 
+fi
