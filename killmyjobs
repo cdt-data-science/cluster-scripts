@@ -9,9 +9,9 @@ Usage: $0 [-n nodelist] [-g]
     To only kill your running jobs, use the -g flag.
 
 Arguments:
-script    the script to be submitted to slurm via sbatch
     -n    (optional) specify nodes, either comma separated list, or summarised.
           Mirrors slurm command -n usage in sinfo, and -w usage for squeue." 
+    -g    (optional) will only kill running jobs, not jobs in the queue 
 EOM
 }
 

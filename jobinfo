@@ -4,12 +4,12 @@ nodes=`sinfo --format="%N" --noheader`
 
 print_usage () {
   cat << EOM
-Usage: $0 [-n charles[01-19]]
+Usage: $0 [-n charles[01-19]] [-u username]
     Get information about all jobs on specified nodes (defaults to all jobs)
 Arguments
     -n    (optional) specify nodes, either comma separated list, or summarised.
-          Mirrors slurm command -n usage in sinfo, and -w usage for squeue." 
- 
+          Mirrors slurm command -n usage in sinfo, and -w usage for squeue. 
+    -u    (optional) specify a user 
 EOM
 }
 
