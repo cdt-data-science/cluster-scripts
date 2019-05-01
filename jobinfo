@@ -1,0 +1,30 @@
+#!/bin/bash
+
+nodes=`sinfo --format="%N" --noheader`
+
+print_usage () {
+  cat << EOM
+Usage: $0 [-n charles[01-19]] [-u username]
+    Get information about all jobs on specified nodes (defaults to all jobs)
+Arguments
+    -n    (optional) specify nodes, either comma separated list, or summarised.
+          Mirrors slurm command -n usage in sinfo, and -w usage for squeue. 
+    -u    (optional) specify a user 
+EOM
+}
+
+while getopts 'n:u:' flag; do
+  case "${flag}" in
+    n) nodes="${OPTARG}" ;;
+    u) user="${OPTARG}" ;;
+    *) print_usage
+       exit ;;
+  esac
+done
+
+if [ -n "${user}" ]; then
+    user_arg="--user=${user}"
+else
+    user_arg=""
+fi
+squeue --nodelist=${nodes} -o"%i" --noheader ${user_arg} | xargs -I {} sh -c 'scontrol show JobId={}'
