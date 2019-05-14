@@ -59,19 +59,19 @@ if [ "$pretty" = true ]; then
 fi
 
 # Count number of GPUs requested by running jobs
-USED=`squeue -t R -o %b -w ${nodes} | grep -o '[0-9]' | awk ' {s+=$1} END {print s}'`
+USED=`squeue -t R -o %b -w ${nodes} | grep -o ':[0-9]' | awk ' {s+=substr($1,2)} END {print s}'`
 if [ "$USED" == '' ]; then
   USED=0
 fi
 
 # Count number of GPUS in nodes marked idle or mix
-USABLE=$(sinfo -t idle,mix -r -N -o %G -n ${nodes} | grep -o '[0-9]' | awk ' {s+=$1} END {print s}')
+USABLE=$(sinfo -t idle,mix -r -N -o %G -n ${nodes} | grep -o ':[0-9]' | awk ' {s+=substr($1,2)} END {print s}')
 if [ "$USABLE" == '' ]; then
   USABLE=0
 fi
 
 # Count number of GPUs in all nodes
-TOTAL=$(sinfo -N -o %G -n ${nodes} | grep -o '[0-9]' | awk ' {s+=$1} END {print s}')
+TOTAL=$(sinfo -N -o %G -n ${nodes} | grep -o ':[0-9]' | awk ' {s+=substr($1,2)} END {print s}')
 if [ "$TOTAL" == '' ]; then
   TOTAL=0
 fi
