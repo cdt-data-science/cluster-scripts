@@ -1,12 +1,12 @@
 #!/bin/bash
 relative_dir=`dirname $0`
-free_gpus=''
+full_capacity=`${relative_dir}/gpu-usage -h | awk -F',' '{if ($1 == $2) printf("true"); else printf("false")}'`
 free_gpus=`${relative_dir}/gpu-usage-by-node -p | awk 'NR==1 {print $0} NR > 1 {if ($5 > $4) print $0}'`
-if [ "${free_gpus}" == "" ]; then
+if $full_capacity; then
   echo No gpus free...join the squeue!
   echo "Tip: you can use the command sprio to observe your job's priority"
   echo "Current queue:"
-  sprio
+  sprio -l
 else
   echo "${free_gpus}"
 fi
