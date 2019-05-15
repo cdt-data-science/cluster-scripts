@@ -1,4 +1,47 @@
 #!/bin/bash
 
-squeue --noheader -o %u | sort | uniq -c | awk 'BEGIN{printf "sid,name,nr_jobs\n"} { cmd="finger -s \""$2"\" | awk '\'' NR > 1 {print $2, $3} '\'' "; cmd|getline name; printf "%s,%s,%s\n", $2, name, $1; close(cmd)}' | column -s',' -t
+squeue --noheader -o "%u %T" | sort | uniq -c | awk '
+BEGIN{
+    printf "sid,name,jobs(running/pending/total)\n";
+    previd="";
+    pending_count=0;
+    running_count=0;
+} {
+    if (NR==1) 
+    {
+	previd=$2;
+    }
+    if ($2==previd) 
+    { 
+        if ($3=="PENDING")
+        {
+            pending_count=$1
+        }
+        else if ($3=="RUNNING")
+        {
+            running_count=$1
+        }
+    } 
+    else 
+    {
+	cmd="finger -s \""previd"\" | awk '\'' NR > 1 {print $2, $3} '\'' ";
+	cmd|getline name; 
+        printf "%s,%s,%s/%s/%s\n", previd, name, running_count,pending_count,running_count+pending_count; 
+        running_count=0;
+        pending_count=0;
+        previd=$2;
+	if ($3=="PENDING")
+        {
+            pending_count=$1
+        }
+	else if ($3=="RUNNING")
+        {
+            running_count=$1
+        }
 
+    }
+    close(cmd)
+}END{
+    cmd="finger -s \""$2"\" | awk '\'' NR > 1 {print $2, $3} '\'' ";
+    cmd|getline name;
+    printf "%s,%s,%s/%s/%s\n", $2, name, running_count,pending_count,running_count+pending_count}' | column -s',' -t
