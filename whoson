@@ -39,4 +39,4 @@ BEGIN{
 
     }
     close(cmd)
-}' | column -s',' -t
+}END{printf "%s,%s,%s/%s/%s\n", $2, prevname, running_count,pending_count,running_count+pending_count}' | column -s',' -t
