@@ -1,4 +1,4 @@
 #!/bin/bash
 
-sinfo -o "%N,%G,%T,%H,%E,%e/%m,%C,%O" -N | column -t -s','
+sinfo -o "%N;%G;%T;%H;%E;%e/%m;%C;%O" -N | column -t -s';'
 
