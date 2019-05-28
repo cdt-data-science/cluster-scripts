@@ -27,6 +27,14 @@ chmod u+x {cluster-status,down-gpus,free-gpus,gpu-usage,gpu-usage-by-node,whoson
 
 You should now be able to run the scripts from anywhere when on the cluster.
 
+If you want to have job ID autocompletion for `scancel`, you need to source the `job-id-completion.sh` script:
+
+```{bash}
+cd ~
+echo "source /home/$USER/git/cluster-scripts/job-id-completion.sh" >> ~/.bashrc
+source ~/.bashrc
+```
+
 ## Examples
 
 * Get an interactive session
