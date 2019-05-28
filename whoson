@@ -1,6 +1,26 @@
 #!/bin/bash
 
-squeue --noheader -o "%u %T" | sort | uniq -c | awk '
+gpu=false
+
+print_usage () {
+  cat << EOM
+Usage: $0 [-g]
+    Get number of jobs running/pending on the cluster grouped by user.
+Arguments
+    -g    (optional) Count GPUs allocated/requested rather than jobs running/pending
+EOM
+}
+
+while getopts ':g' flag; do
+  case "${flag}" in
+    g) gpu=true ;;
+    *) print_usage
+       exit ;;
+  esac
+done
+
+if [ "${gpu}" == false ]; then
+	squeue --noheader -o "%u %T" | sort | uniq -c | awk '
 BEGIN{
     printf "sid,name,jobs(running/pending/total)\n";
     previd="";
@@ -45,3 +65,52 @@ BEGIN{
     cmd="finger -s \""$2"\" | awk '\'' NR > 1 {print $2, $3} '\'' ";
     cmd|getline name;
     printf "%s,%s,%s/%s/%s\n", $2, name, running_count,pending_count,running_count+pending_count}' | column -s',' -t
+else
+        squeue --noheader -o "%u %T %b" | sort | awk '
+BEGIN{
+    printf "sid,name,jobs(running/pending/total)\n";
+    previd="";
+    pending_count=0;
+    running_count=0;
+} {
+    sub(/.*:/, "",$3)
+    if (NR==1)
+    {
+     	previd=$1;
+    }
+    if ($1==previd)
+    {
+     	if ($2=="PENDING")
+        {
+            pending_count += $3
+        }
+	else if ($2=="RUNNING")
+        {
+            running_count += $3
+        }
+    }
+    else
+    {
+     	cmd="finger -s \""previd"\" | awk '\'' NR > 1 {print $2, $3} '\'' ";
+        cmd|getline name;
+        printf "%s,%s,%s/%s/%s\n", previd, name, running_count,pending_count,running_count+pending_count;
+        running_count=0;
+        pending_count=0;
+        previd=$1;
+        if ($2=="PENDING")
+        {
+            pending_count += $3
+        }
+        else if ($2=="RUNNING")
+        {
+            running_count += $3
+        }
+
+    }
+    close(cmd)
+}END{
+    cmd="finger -s \""$1"\" | awk '\'' NR > 1 {print $2, $3} '\'' ";
+    cmd|getline name;
+    printf "%s,%s,%s/%s/%s\n", $1, name, running_count,pending_count,running_count+pending_count}' | column -s',' -t
+	
+fi
