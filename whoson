@@ -19,7 +19,7 @@ while getopts ':g' flag; do
   esac
 done
 
-squeue --noheader -o "%u %T %b" | sort | awk -v countgpus="${gpu}" '
+squeue -r --noheader -o "%u %T %b" | sort | awk -v countgpus="${gpu}" '
 BEGIN{
     printf "sid,name,jobs(running/pending/total)\n";
     previd="";
