@@ -32,7 +32,7 @@ if [ "$running_only" = true ]; then
     jobids="$(squeue -u `whoami` --nodelist=${nodes} -o "%i" --noheader)"
 else
     echo killing jobs in queue as well as running jobs
-    jobids="$(squeue -u `whoami` -o "%i" --noheader)"
+    jobids="$(squeue -r -u `whoami` -o "%i" --noheader)"
 fi
 if [ "${jobids}" = "" ]; then
     echo "well I would...but you've got no jobs to kill m8"
