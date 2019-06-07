@@ -1,6 +1,6 @@
 #!/bin/bash
 
-default_args="--time=01:00:00 --mem=2000 --cpus-per-task=1"
+default_args="--partition=Interactive --time=02:00:00 --mem=14000 --cpus-per-task=4"
 read -r -d '' default_msg << EOM
 ======================= WELCOME MESSAGE =======================
 It's good practice to set a few parameters when using srun
@@ -26,6 +26,12 @@ Useful arg examples:
                          (note this is not GPU memory)
 * --cpus-per-task=1      give me 1 cpu, there's 32 on most
                          nodes
+* --partition=...        there is a partition explicitly for
+                         interactive jobs (called Partition).
+                         You are welcome to run interactive
+                         jobs on other partitions if the
+                         Interactive partition is full. To
+                         get the full list, run "sinfo"
 
 For more informtion about node configuration, see the
 computing support docs:
