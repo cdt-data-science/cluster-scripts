@@ -1,0 +1,6 @@
+python python_script.py 10 'here' 'is' 'other' 'argzes'
+python python_script.py 5 'here' 'is' 'other' 'argzes2'
+python python_script.py 20 'here' 'is' 'other' 'argzes3'
+python python_script.py 15 'here' 'is' 'other' 'argzes4'
+python python_script.py 20 'here' 'is' 'other' 'argzes5'
+python python_script.py 15 'here' 'is' 'other' 'argzes6'
