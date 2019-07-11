@@ -65,7 +65,7 @@ if [ "$USED" == '' ]; then
 fi
 
 # Count number of GPUS in nodes marked idle or mix
-USABLE=$(sinfo -t idle,mix -r -N -o %G -n ${nodes} | grep -o ':[0-9]' | awk ' {s+=substr($1,2)} END {print s}')
+USABLE=$(sinfo -t idle,mix,alloc -r -N -o %G -n ${nodes} | grep -o ':[0-9]' | awk ' {s+=substr($1,2)} END {print s}')
 if [ "$USABLE" == '' ]; then
   USABLE=0
 fi
