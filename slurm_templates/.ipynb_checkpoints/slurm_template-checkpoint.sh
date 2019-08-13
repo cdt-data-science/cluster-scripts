@@ -30,24 +30,24 @@ mkdir -p ${SCRATCH_HOME}  # making your folder on the charles node's hard drive
 
 
 ################ Setting up data shit #################
-echo 'Moving data from the cluster filesystem to the hard drive of the Charles node'
-# Zipped file on the cluster filesystem (glusterfs....slow!)
-source=/home/s0910166/git/cluster-scripts/slurm_templates/demo_data.tar.gz
+# echo 'Moving data from the cluster filesystem to the hard drive of the Charles node'
+# # Zipped file on the cluster filesystem (glusterfs....slow!)
+# source=/home/s0910166/git/cluster-scripts/slurm_templates/demo_data.tar.gz
 
-# Where we want to put data on the charles node's hard drive
-target=/disk/scratch/s0910166/data/demo_data.tar.gz
+# # Where we want to put data on the charles node's hard drive
+# target=/disk/scratch/s0910166/data/demo_data.tar.gz
 
-rsync -ua --progress ${source} ${target}  # copy data from source to target location
-                                          # (will only do it if it needs to)
+# rsync -ua --progress ${source} ${target}  # copy data from source to target location
+#                                           # (will only do it if it needs to)
 
-# target_unzipped=${target%%.*}
-target_unzipped=/disk/scratch/s0910166/data/demo_data
-if [ -d "$target_unzipped" ]; then
-    echo "Assuming zip already extracted..."
-else
-    echo "Extracting zip..."
-    tar xvzf ${target}
-fi
+# # target_unzipped=${target%%.*}
+# target_unzipped=/disk/scratch/s0910166/data/demo_data
+# if [ -d "$target_unzipped" ]; then
+#     echo "Assuming zip already extracted..."
+# else
+#     echo "Extracting zip..."
+#     tar xvzf ${target}
+# fi
 
 
 ############### The actual job! ##################
