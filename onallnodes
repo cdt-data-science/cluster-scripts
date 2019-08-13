@@ -28,7 +28,7 @@ if [ "$script" = "" ]; then
     exit 1
 fi
 
-node_partition_list=`sinfo --format="%n,%R" --noheader -n ${nodes}`
+node_partition_list=`sinfo --format="%n,%R" --noheader -n ${nodes} -N`
 node=`echo "${node_partition_list}" | cut -f1 -d','` 
 partition=`echo "${node_partition_list}" | cut -f2 -d','` 
 parallel --link "sbatch --partition={1} --nodelist={2} ${script}" ::: $partition ::: $node 
