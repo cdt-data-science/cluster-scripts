@@ -21,8 +21,9 @@ while getopts 'n:' flag; do
        exit 1 ;;
   esac
 done
+shift $((OPTIND-1))
 
-script="${@:$OPTIND:1}"
+script="${@}"
 if [ "$script" = "" ]; then
     >&2 echo "You must supply a script"
     exit 1
@@ -31,5 +32,6 @@ fi
 node_partition_list=`sinfo --format="%n,%R" --noheader -n ${nodes} -N`
 node=`echo "${node_partition_list}" | cut -f1 -d','` 
 partition=`echo "${node_partition_list}" | cut -f2 -d','` 
+echo "running $script on nodes $nodes"
 parallel --link "sbatch --partition={1} --nodelist={2} ${script}" ::: $partition ::: $node 
 
