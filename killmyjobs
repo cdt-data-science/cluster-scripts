@@ -40,7 +40,7 @@ if [ "${jobids}" = "" ]; then
     echo "well I would...but you've got no jobs to kill m8"
 else
     if [[ -n ${exclude+1} ]]; then
-	echo excluding ${exclude[@]} 
+	echo "excluding ${exclude[@]}"
         excl=`printf '%s\n' "${exclude[@]}" | LC_ALL=C sort`
         jobids=`comm -13 <(echo "$excl") <(echo "$jobids")`
     fi
