@@ -6,8 +6,14 @@ print_usage () {
   cat << EOM
 Usage: $0 [-g]
     Get number of jobs running/pending on the cluster grouped by user.
-Arguments
+
+Arguments:
     -g    (optional) Count GPUs allocated/requested rather than jobs running/pending
+
+Output:
+    For each user with queued/running jobs, prints a line showing the total number of jobs as well as a breakdown into
+    running and pending. With the -g flag, shows the number of GPUs allocated/requested.
+
 EOM
 }
 
@@ -21,7 +27,14 @@ done
 
 squeue -r --noheader -o "%u %T %b" | sort | awk -v countgpus="${gpu}" '
 BEGIN{
-    printf "sid,name,jobs(running/pending/total)\n";
+    if (countgpus=="true")
+    {
+        printf "sid,name,GPUs(running/pending/total)\n";
+    }
+    else
+    {
+        printf "sid,name,jobs(running/pending/total)\n";
+    }
     previd="";
     pending_count=0;
     running_count=0;

@@ -1,3 +1,4 @@
+#!/bin/bash
 # Prints details of interactive jobs running for longer than a day
 # This is prob better for getting interactive jobs but grep for bash works
 # squeue --Format="jobid,batchflag" | awk 'NR>1 {if ($2==0) print $1}'
