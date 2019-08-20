@@ -23,7 +23,8 @@ Output:
 EOM
 }
 
-if [ ${#@} > 0 ]; then
+if [ "${#@}" -gt 0 ]; then
+    echo "${#@}"
     print_usage
     exit
 fi
