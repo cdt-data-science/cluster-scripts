@@ -31,7 +31,7 @@ fi
 
 relative_dir=`dirname $0`
 full_capacity=`${relative_dir}/gpu-usage -h | awk -F',' '{if ($1 == $2) printf("true"); else printf("false")}'`
-free_gpus=`${relative_dir}/gpu-usage-by-node -p | awk 'NR==1 {print $1,$2,$6} NR > 1 {if ($7 > 0) print $1,$2,$3,$7}' | column -t -s','`
+free_gpus=`${relative_dir}/gpu-usage-by-node -p | awk 'NR==1 {printf "%s,%s,%s\n",$1,$2,$6} NR > 1 {if ($7 > 0) printf "%s %s,%s,%s\n",$1,$2,$3,$7}' | column -t -s','`
 if $full_capacity; then
   echo "No gpus free...join the squeue!"
   echo "Tip: you can use the command sprio to observe your job's priority"
