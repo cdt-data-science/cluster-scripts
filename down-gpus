@@ -1,4 +1,24 @@
 #!/bin/bash
+
+print_usage () {
+  cat << EOM
+Usage: $0
+    List nodes with down GPUs.
+
+Arguments:
+    None.
+
+Output:
+    Lists each node with at least one down GPU on separate lines.
+
+EOM
+}
+
+if [ ${#@} > 0 ]; then
+    print_usage
+    exit
+fi
+
 relative_dir=`dirname $0`
 down_gpus=''
 full_capacity=`${relative_dir}/gpu-usage -h | awk -F',' '{if ($2 == $3) printf("true"); else printf("false")}'`

@@ -1,9 +1,38 @@
 #!/bin/bash
+
+print_usage () {
+  cat << EOM
+Usage: $0
+    List nodes with free GPUs, as well as a breakdown of how many GPUs in each node are available.
+
+Arguments:
+    None.
+
+Output:
+    Lists each node with at least one free GPU on separate lines.
+    Also lists a breakdown of the states of the GPUs:
+        -- The 'in_use' column shows the number of GPUs on the node that are currently allocated to a job.
+        -- The 'usable' column shows the number of GPUs on the node that are not in an error state or otherwise unable
+            to be allocated to a job.
+        -- The 'total' column shows the total number of GPUs on the node, including those that are currently unable to
+            be allocated to a job.
+
+    The number of free GPUs (GPUs not allocated to a job and not in an error state) on a node is the difference between
+    the 'usable' column and the 'in_use' column.
+
+EOM
+}
+
+if [ ${#@} > 0 ]; then
+    print_usage
+    exit
+fi
+
 relative_dir=`dirname $0`
 full_capacity=`${relative_dir}/gpu-usage -h | awk -F',' '{if ($1 == $2) printf("true"); else printf("false")}'`
 free_gpus=`${relative_dir}/gpu-usage-by-node -p | awk 'NR==1 {print $0} NR > 1 {if ($5 > $4) print $0}'`
 if $full_capacity; then
-  echo No gpus free...join the squeue!
+  echo "No gpus free...join the squeue!"
   echo "Tip: you can use the command sprio to observe your job's priority"
   echo "Current queue:"
   sprio -l

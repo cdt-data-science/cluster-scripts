@@ -7,12 +7,14 @@ print_usage () {
 Usage: $0 [-n nodelist] [-g] [-e JOBID [-e JOBID ... ]] 
     Kills all your jobs! By default, also kills those you have queued up too.
     To only kill your running jobs, use the -g flag.
+    Jobs that are not to be killed can be indicated using the -e flag.
 
 Arguments:
     -n    (optional) specify nodes, either comma separated list, or summarised.
           Mirrors slurm command -n usage in sinfo, and -w usage for squeue." 
     -g    (optional) will only kill running jobs, not jobs in the queue 
-    -e    (optional) a job to exclude, can specify multiple times 
+    -e    (optional) a job to exclude, can specify multiple times
+
 EOM
 }
 
@@ -30,10 +32,10 @@ if [ "$running_only" = true ]; then
     if [ -z ${nodes+x} ]; then
         nodes=`sinfo --format="%N" --noheader`
     fi
-    echo not killing jobs in queue
+    echo "not killing jobs in queue"
     jobids="$(squeue -u `whoami` --nodelist=${nodes} -o "%i" --noheader | LC_ALL=C sort)"
 else
-    echo killing jobs in queue as well as running jobs
+    echo "killing jobs in queue as well as running jobs"
     jobids="$(squeue -r -u `whoami` -o "%i" --noheader | LC_ALL=C sort)"
 fi
 if [ "${jobids}" = "" ]; then
@@ -42,8 +44,8 @@ else
     if [[ -n ${exclude+1} ]]; then
 	echo "excluding ${exclude[@]}"
         excl=`printf '%s\n' "${exclude[@]}" | LC_ALL=C sort`
-        jobids=`comm -13 <(echo "$excl") <(echo "$jobids")`
+        jobids=`comm -13 <(echo "$excl") <(echo "$jobids") | tr '\n' ' '`
     fi
-    echo killing $jobids 
+    echo "killing $jobids"
     parallel 'scancel {}' ::: ${jobids} 
 fi

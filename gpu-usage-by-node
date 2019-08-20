@@ -6,12 +6,28 @@ pretty=false
 
 print_usage () {
   cat << EOM
-Usage: $0 [-h] [-p] [-n nodelist] 
+Usage: $0 [-h | -H] [-p] [-n nodelist]
+    Print a summary of GPU usage for each node.
+
 Arguments:
     -n    (optional) specify nodes, either comma separated list, or summarised.
-          Mirrors slurm command -n usage in sinfo, and -w usage for squeue." 
+          Mirrors slurm command -n usage in sinfo, and -w usage for squeue."
+    -h    (optional) do not print header (default behaviour)
     -H    (optional) print header (note that lowercase -h is no-header for gpu-usage)
-    -p    (optional) make output pretty, ignores -H if specified
+    -p    (optional) make output pretty, ignores -H and -h if specified
+
+Output:
+    Summarises the current GPU usage for each node:
+        -- The 'in_use' column shows the number of GPUs on the node that are currently allocated to a job.
+        -- The 'usable' column shows the number of GPUs on the node that are not in an error state or otherwise unable
+            to be allocated to a job.
+        -- The 'total' column shows the total number of GPUs on the node, including those that are currently unable to
+            be allocated to a job.
+
+    The number of free GPUs (GPUs not allocated to a job and not in an error state) on a node is the difference between
+    the 'usable' column and the 'in_use' column.
+
+    The output is printed in CSV format by default, with the -p option output is printed as a table.
 
 EOM
 }

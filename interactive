@@ -61,11 +61,11 @@ else
 fi
 
 echo
-echo Doing a --test-only to estimate wait time...
+echo "Doing a --test-only to estimate wait time..."
 srun $args --test-only --pty bash
 echo
 
-echo Running the following command to get you an interactive session:
+echo "Running the following command to get you an interactive session:"
 echo "srun $args --pty bash"
-echo ...
+echo "..."
 srun $args --pty bash

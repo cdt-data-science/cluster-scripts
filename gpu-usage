@@ -8,37 +8,47 @@ print_usage () {
 Usage: $0 [-n charles[01-19]]
     Get gpu usage for all, or specified nodes
 
-Arguments
+Arguments:
     -n    (optional) specify nodes, either comma separated list, or summarised.
           Mirrors slurm command -n usage in sinfo, and -w usage for squeue." 
     -h    (optional) do not print header
     -p    (optional) make output pretty, ignores -h if specified
 
+Output:
+    Outputs three columns summarising the current usage of GPUs on the cluster:
+        -- The 'in_use' column shows the number of GPUs that are currently allocated to a job.
+        -- The 'usable' column shows the number of GPUs that are not in an error state or otherwise unable to be
+            allocated to a job.
+        -- The 'total' column shows the total number of GPUs, including those that are currently unable to be allocated
+            to a job.
+
+    The number of free GPUs (GPUs not allocated to a job and not in an error state) is the difference between the
+    'usable' column and the 'in_use' column.
+
 Examples:
-    $ # Get status of all nodes aggregated
+    # Get status of all nodes aggregated:
     $ ./gpu-usage
     >    in_use,usable,total
     >    18,34,55
 
-    $ # Suppress header
+    # Suppress header:
     $ ./gpu-usage -h
     >    18,34,55
 
-    $ # Specify specific nodes in comma separated list
+    # Specify specific nodes in comma separated list:
     $ ./gpu-usage -n charles01,charles03 -p
     >    in_use  usable  total
     >    1       2       4
 
-    $ # Same as above but with summarised node format
+    # Same as above but with summarised node format:
     $ ./gpu-usage -n charles[01,03] -p
     >    in_use  usable  total
     >    1       2       4
 
-    $ # Example with split list
+    # Example with split list:
     $ ./gpu-usage -p -n charles[01-06,11-19]
     >    in_use  usable  total
          14      26      47
- 
 
 EOM
 }
@@ -77,6 +87,6 @@ if [ "$TOTAL" == '' ]; then
 fi
 
 if [ "$header" = true ]; then 
-  echo in_use,usable,total
+  echo "in_use,usable,total"
 fi
 echo "${USED},${USABLE},${TOTAL}"
