@@ -3,7 +3,7 @@
 ## Example call:
 ##     EXPT_FILE=experiments.txt  # <- this has a command to run on each line
 ##     NR_EXPTS=`cat ${EXPT_FILE} | wc -l`
-##     MAX_PARALLEL_JOBS=4 
+##     MAX_PARALLEL_JOBS=12 
 ##     sbatch --array=1-${NR_EXPTS}%${MAX_PARALLEL_JOBS} slurm_arrayjob_template.sh $EXPT_FILE
 
 #SBATCH -o /mnt/cdtds_cluster_home/s0910166/slurm_logs/slurm-%A_%a.out
@@ -12,10 +12,11 @@
 #SBATCH -n 1	  # tasks requested
 #SBATCH --gres=gpu:1  # use 1 GPU
 #SBATCH --mem=14000  # memory in Mb
-#SBATCH -t 2:30:00  # time requested in hour:minute:seconds
-#SBATCH --cpus-per-task=4  # number of cpus to use - there are 32 on each node.
+#SBATCH -t 16:30:00  # time requested in hour:minute:seconds
+#SBATCH --cpus-per-task=8  # number of cpus to use - there are 32 on each node.
 # #SBATCH --exclude=charles[12-18]
 
+############### Crap for logging ##################
 source ~/.bashrc
 set -e  # make script bail out after first error
 
@@ -29,19 +30,31 @@ echo $dt
 echo 'Setting experiment environment variables'
 export STUDENT_ID=$(whoami)
 export SCRATCH_HOME=/disk/scratch/${STUDENT_ID}
-mkdir -p ${SCRATCH_HOME}
-export TMPDIR=${SCRATCH_HOME}
-export TMP=${SCRATCH_HOME}
-# export DATA_HOME=$SCRATCH_HOME/data/mirex_p4p
-# mkdir -p ${DATA_HOME}
-export CLUSTER_HOME=/mnt/cdtds_cluster_home/${STUDENT_ID}
-# export OUTPUT_DIR=${CLUSTER_HOME}/git/melody_gen/data/output
+mkdir -p ${SCRATCH_HOME}  # making your folder on the charles node's hard drive
 
-# HERE send your data from albert to scratch:
-# Ok, so Antreas uses `rsync -ua --progress source target`
-# Ah. but he says 'Ensure your files are packed in a large compressed file though'
-# That's quite an important point actually. The filesystem is fast at transferring 'one large file' but dog slow at transferring 'many small files'. So make sure you're just moving a zip around
 
+################ Setting up data shit #################
+echo 'Moving data from the cluster filesystem to the hard drive of the Charles node'
+# Zipped file on the cluster filesystem (glusterfs....slow!)
+dirname=mts_archive
+source=/home/s0910166/git/DNNTSC/archives/${dirname}.zip
+
+data_home=/disk/scratch/s0910166/data
+mkdir -p ${data_home}
+
+# Where we want to put data zip on the charles node's hard drive
+target=${data_home}/${dirname}.zip
+
+
+rsync -ua --progress ${source} ${target}  # copy data from source to target location
+                                          # (will only do it if it needs to)
+
+if [ -d "${data_home}/${dirname}" ]; then
+    echo "Assuming zip already extracted..."
+else
+    echo "Extracting zip..."
+    unzip ${target} -d ${data_home}
+fi
 
 # Activate the relevant virtual environment
 echo "Activating virtual environment"
