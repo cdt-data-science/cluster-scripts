@@ -5,11 +5,17 @@ nodes=`sinfo --format="%N" --noheader`
 print_usage () {
   cat << EOM
 Usage: $0 [-n charles[01-19]] [-u username]
-    Get information about all jobs on specified nodes (defaults to all jobs)
-Arguments
+    Get information about all jobs on specified nodes (defaults to all jobs).
+
+Arguments:
     -n    (optional) specify nodes, either comma separated list, or summarised.
           Mirrors slurm command -n usage in sinfo, and -w usage for squeue. 
-    -u    (optional) specify a user 
+    -u    (optional) specify a user
+
+Output:
+    Shows the output of 'scontrol show JobId=[job]' for each job on the specified nodes. If a user is specified with the
+    -u flag, then only details for jobs belonging to that user are printed.
+
 EOM
 }
 

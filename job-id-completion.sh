@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# Adds autocomplete to the scancel command.
+# Typing "scancel <tab>" will give a list of your currently queued/running jobs.
+# The job ID will be autocompleted if there is only a single job ID that matches
+# what has been typed already.
+
 _cluster_jobs()
 {
     # Based on tutorial at:

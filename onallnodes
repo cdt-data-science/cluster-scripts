@@ -4,13 +4,14 @@ nodes=`sinfo --format="%N" --noheader`
 
 print_usage () {
   cat << EOM
-Runs given script on all nodes by submitting supplied script with sbatch
+Usage: $0 [-n nodelist] script
+    Runs given script on all nodes by submitting supplied script with sbatch.
 
-Usage: $0 [-n nodelist] script 
 Arguments:
-script    the script to be submitted to slurm via sbatch
-    -n    (optional) specify nodes, either comma separated list, or summarised.
-          Mirrors slurm command -n usage in sinfo, and -w usage for squeue." 
+    script    the script to be submitted to slurm via sbatch
+    -n        (optional) specify nodes, either comma separated list, or summarised.
+              Mirrors slurm command -n usage in sinfo, and -w usage for squeue."
+
 EOM
 }
 
