@@ -86,7 +86,10 @@ if [ "$TOTAL" == '' ]; then
   TOTAL=0
 fi
 
+# Get number of free GPUs
+FREE=$(expr "${USABLE}" - "${USED}")
+
 if [ "$header" = true ]; then 
-  echo "in_use,usable,total"
+  echo "in_use,usable,total,free"
 fi
-echo "${USED},${USABLE},${TOTAL}"
+echo "${USED},${USABLE},${TOTAL},${FREE}"
