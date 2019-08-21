@@ -14,7 +14,7 @@ Output:
 EOM
 }
 
-if [ ${#@} > 0 ]; then
+if [ ${#@} -gt 0 ]; then
     print_usage
     exit
 fi
