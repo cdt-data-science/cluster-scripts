@@ -1,5 +1,14 @@
 #!/bin/bash
 
+# TODO: check if partition containing word interactive exists then try and run
+#       there - upon failure (or estimate in > 2 mins time) try using default
+#       partition. If too long, try interactive partition again and warn of
+#       wait.
+
+# TODO: decide what to do with welcome message!
+
+# TODO: make a _gpu and non version
+
 default_args="--partition=Interactive --time=08:00:00 --mem=14000 --cpus-per-task=4 --gres=gpu:1"
 read -r -d '' default_msg << EOM
 ======================= WELCOME MESSAGE =======================
