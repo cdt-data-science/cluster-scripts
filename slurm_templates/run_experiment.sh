@@ -55,12 +55,12 @@ EXPT_FILE=""
 MAX_PARALLEL_JOBS=10
 
 # Parse args
-while getopts 't:e:m:' flag; do
+while getopts 't:e:m:h' flag; do
   case "${flag}" in
     t) BASH_SCRIPT="${OPTARG}" ;;
     e) EXPT_FILE="${OPTARG}" ;;
     m) MAX_PARALLEL_JOBS="${OPTARG}" ;;
-    *) print_usage
+    h) print_usage
        exit ;;
   esac
 done
