@@ -1,0 +1,61 @@
+#!/bin/bash
+
+print_usage () {
+  cat << EOM
+
+Usage: $0 -n nodename [-s sbatch_args] command
+    Run a command and print the output to stout/stderr
+
+Arguments:
+    -n nodename
+        The name of the node to run the command on
+    -s sbatch_args
+        Arguments to supply to sbatch wrapped as a string
+    command
+        The command exactly as you want to run in on the node
+
+EOM
+}
+
+node=''
+sbatch_args=''
+# Parse args
+while getopts 'n:s:h' flag; do
+  case "${flag}" in
+    n) node="${OPTARG}" ;;
+    s) sbatch_args="${OPTARG}" ;;
+    h) print_usage
+       exit ;;
+  esac
+done
+
+# Check a bash script supplied
+if [ -z "${node}" ]; then
+  echo "You must supply a node to run the command on"
+  print_usage
+  exit 1
+fi
+
+# Check a bash script supplied
+if [ -z "${sbatch_args}" ]; then
+  # On some clusters e.g. cdtcluster, time arg is compulsory for job to run
+  sbatch_args="--time=00:01:00"
+fi
+
+# Set all remaining args as the command to run (supplied direct to sbatch)
+shift $((OPTIND -1))
+command="${@}"
+
+read -r -d '' bash_script << EOM
+#/bin/bash
+#SBATCH -o /tmp/sbatch_stdout.log
+#SBATCH -e /tmp/sbatch_sterr.log
+${command}
+EOM
+
+echo "$bash_script" > /tmp/bash_script.sh
+
+sbatch ${sbatch_args} /tmp/bash_script.sh
+
+cat /tmp/sbatch_stdout.log >&1
+cat /tmp/sbatch_stderr.log >&2
