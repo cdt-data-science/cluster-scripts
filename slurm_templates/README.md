@@ -15,7 +15,7 @@ it:
    read a single line of the experiment text file and execute it. The line to
    be read from the experiment file is determined by how many jobs have already
    been run by the `sbatch` command so far; this is stored as the variable
-   ${SLURM_ARRAY_TASK_ID}
+   `${SLURM_ARRAY_TASK_ID}`
 
 That's it! For every project, you'll likely need to make a new bash script.
 You will probably want to make many different experiment files for a single
@@ -113,20 +113,35 @@ the scratch space if it isn't already there. Protip: use `rsync` to do this.
 The `sbatch` command can operate in a couple of modes: executing a bash script
 once, or executing it in an 'array' some specified number of times **in 
 parallel**. We call these 
-[array jobs](https://slurm.schedmd.com/job_array.html).
-
-
-
-### The bash script
-
-### The experiment file
-
+[array jobs](https://slurm.schedmd.com/job_array.html). If you run your sbatch
+command in array mode, you can use the environment variable 
+`${SLURM_ARRAY_TASK_ID}`, the id number of the specific job number in the
+array, to call out to another file, select a line, and run it. There are
+benefits to running your experiments like this:
+1. You can change the maximum number of parallel jobs running at any given time
+   after the job has started e.g. the command 
+   `scontrol update ArrayTaskThrottle=36 JobId=450263` changes the number of
+   parallel jobs of array job 450263 to 36
+2. control - you can easily stop, pause, or restart a whole group of jobs
+3. reproducibility - you necessarily have a file containing exactly what
+   commands you ran. If you use a version control system (you...are right?!)
+   then you can easily commit these with the codebase at a given timepoint and
+   return there any time you like
 
 ## Tips
+Firstly make sure that you add all the scripts in the the home directory of
+this repository to your `$PATH`. Follow the installation instructions in the
+[README](../README.md) and quickly skim the documentation there to see what
+they do. They're very useful for observing the status of the cluster, your
+jobs, and performing tricky operations.
+
+### Observing (hopefully) running jobs
+To see all your running jobs run `squeue -u $USER` or `myjobs`
 
 ### Testing
 
 ### Moving data
+
 
 ## FAQ & Gotchas
 
