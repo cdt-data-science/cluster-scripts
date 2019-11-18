@@ -3,7 +3,11 @@
 
 print_usage () {
   cat << EOM
-Usage: $0 -t slurm_template -e experiment_textfile [-m max_nr_parallel_jobs] [sbatch_args]
+  
+Usage: 
+  $0 -t path/to/slurm_arrayjob.sh -e path/to/experiment.txt \\
+      [-m max_nr_parallel_jobs] [sbatch_args]
+
   Convenience function for running arrayjob experiments with slurm. Expects
   the user to have created a bash script to supply to sbatch, and a text file
   with each line containing a command to run a single experiment. For a filled
@@ -14,11 +18,15 @@ Usage: $0 -t slurm_template -e experiment_textfile [-m max_nr_parallel_jobs] [sb
 
 Arguments:
 
-  -t slurm_template : str
-     the path to the bash script to supply to sbatch
+  -t path/to/slurm_arrayjob.sh : str
+     the path to the bash script to supply to sbatch. This script contains the
+     configuration for the sbatch arrayjob and takes experiment.txt as an 
+     argument. It uses the slurm variable $SLURM_ARRAY_TASK_ID to select a line
+     from experiment.txt and run it.
      
-  -e experiment_textfile : str
-     a file which contains a command to run on each line
+  -e /path/to/experiment.txt : str
+     the path to the file which contains a command to run on each line. This is
+     supplied to the bash script slurm_arrayjob.sh
      
   -m (optional) max_nr_parallel_jobs : int
      the maximum number of jobs that can run simultaneously. If not
@@ -26,12 +34,19 @@ Arguments:
      
   all remaining args (optional) sbatch_arg : str
      all remaining arguments will be combined and supplied to the sbatch
-     command being executed. N.B. you *must* specify max_nr_parallel_jobs
-     to use this feature
+     command being executed. These arguments will override sbatch arguments you
+     specified in slurm_arrayjob.sh
     
 Example call:
-  $ run_experiment.sh -t example/slurm_arrayjob.sh -e example/experiments.txt -m 12 --gres=gpu:1 --mem=8000
+  $ run_experiment.sh -t example/slurm_arrayjob.sh -e example/experiments.txt \\
+      -m 12 --cpus-per-task=4 --gres=gpu:1 --mem=8000
 
+  If example/experiments.txt contains 1000 lines, this would result in the
+  following command being run:
+  
+  sbatch --array=1-1000%12 --cpus-per-task=4 --gres=gpu:1 --mem=8000 \\
+      example/slurm_arrayjob.sh example/experiments.txt
+  
 EOM
 }
 
@@ -56,8 +71,7 @@ SBATCH_ARGS="${@}"
 
 # Check a bash script supplied
 if [ -z "${BASH_SCRIPT}" ]; then
-  echo "You give a bash script to supply to the sbatch command."
-  echo "${#@}"
+  echo "You must give a bash script to supply to the sbatch command."
   print_usage
   exit 1
 fi
@@ -65,15 +79,14 @@ fi
 # Check bash script exists
 if [ ! -f "$BASH_SCRIPT" ]; then
   echo "${BASH_SCRIPT} does not exist"
-  echo "${#@}"
   print_usage
   exit 1
 fi
 
 # Check an experiment file supplied
 if [ -z "${EXPT_FILE}" ]; then
-  echo "You give a file of experiment commands to run (supplied to bash script)."
-  echo "${#@}"
+  echo "You must give a file of experiment commands to run "\
+       "(which is supplied to bash script)."
   print_usage
   exit 1
 fi
@@ -81,7 +94,6 @@ fi
 # Check experiment file exists
 if [ ! -f "$EXPT_FILE" ]; then
   echo "${EXPT_FILE} does not exist"
-  echo "${#@}"
   print_usage
   exit 1
 fi
@@ -91,7 +103,6 @@ re='^[0-9]+$'
 if ! [[ $MAX_PARALLEL_JOBS =~ $re ]] ; then
   echo "The second argument is the max nr of parallel jobs"
   echo "It must be a number, you supplied ${MAX_PARALLEL_JOBS}"
-  echo "${#@}"
   print_usage
   exit 1
 fi
