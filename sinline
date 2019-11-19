@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 print_usage () {
   cat << EOM
 
@@ -14,8 +16,6 @@ Arguments:
         argument submitted to python)
     -s sbatch_args
         Arguments to supply to sbatch wrapped as a string
-    command
-        The command exactly as you want to run in on the node
 
 Example call:
     $ sinline -n charles01 -c 'echo "It'\''s so convenient!"' -s '--time=00:01:00 -p Interactive'
