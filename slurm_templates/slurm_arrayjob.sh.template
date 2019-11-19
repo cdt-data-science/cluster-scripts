@@ -1,71 +1,150 @@
-#!/usr/bin/env sh
-## Template for use with a file containing a list of commands to run
-## Example call:
-##     EXPT_FILE=experiments.txt  # <- this has a command to run on each line
-##     NR_EXPTS=`cat ${EXPT_FILE} | wc -l`
-##     MAX_PARALLEL_JOBS=12 
-##     sbatch --array=1-${NR_EXPTS}%${MAX_PARALLEL_JOBS} slurm_arrayjob_template.sh $EXPT_FILE
+#!/bin/bash
+# Author(s): James Owers (james.f.owers@gmail.com)
+# Last updated: Nov 2019
+#
+# Template for running an sbatch arrayjob with a file containing a list of
+# commands to run. Copy this, remove the .template, and edit as you wish to
+# fit your needs.
+# 
+# Assuming this file has been edited and renamed slurm_arrayjob.sh, here's an
+# example usage:
+# ```
+# EXPT_FILE=experiments.txt  # <- this has a command to run on each line
+# NR_EXPTS=`cat ${EXPT_FILE} | wc -l`
+# MAX_PARALLEL_JOBS=12 
+# sbatch --array=1-${NR_EXPTS}%${MAX_PARALLEL_JOBS} slurm_arrayjob.sh $EXPT_FILE
+# ```
+#
+# or, equivalently and as intended, with provided `run_experiement.sh`:
+# ```
+# run_experiment.sh -t slurm_arrayjob.sh -e experiments.txt -m 12
+# ```
 
-#SBATCH -o /mnt/cdtds_cluster_home/s0910166/slurm_logs/slurm-%A_%a.out
-#SBATCH -e /mnt/cdtds_cluster_home/s0910166/slurm_logs/slurm-%A_%a.out
-#SBATCH -N 1	  # nodes requested
-#SBATCH -n 1	  # tasks requested
-#SBATCH --gres=gpu:1  # use 1 GPU
-#SBATCH --mem=14000  # memory in Mb
-#SBATCH -t 16:30:00  # time requested in hour:minute:seconds
-#SBATCH --cpus-per-task=8  # number of cpus to use - there are 32 on each node.
-# #SBATCH --exclude=charles[12-18]
 
-############### Crap for logging ##################
+# ====================
+# Options for sbatch
+# ====================
+# FMI about options, see https://slurm.schedmd.com/sbatch.html
+# N.B. options supplied on the command line will overwrite these set here
+
+# *** To set any of these options, remove the first comment hash '# ' ***
+# i.e. `# # SBATCH ...` -> `#SBATCH ...`
+
+# Location for stdout log - see https://slurm.schedmd.com/sbatch.html#lbAH
+# #SBATCH --output=/home/%u/slurm_logs/slurm-%A_%a.out
+
+# Location for stderr log - see https://slurm.schedmd.com/sbatch.html#lbAH
+# #SBATCH --error=/home/%u/slurm_logs/slurm-%A_%a.out
+
+# Maximum number of nodes to use for the job
+# #SBATCH --nodes=1
+
+# Generic resources to use - typically you'll want gpu:n to get n gpus
+# #SBATCH --gres=gpu:1
+
+# Megabytes of RAM required. Check `cluster-status` for node configurations
+# #SBATCH --mem=14000
+
+# Number of CPUs to use. Check `cluster-status` for node configurations
+# #SBATCH --cpus-per-task=4
+
+# Maximum time for the job to run, format: days-hours:minutes:seconds
+# #SBATCH --time=1-04:00:00
+
+# Partition of the cluster to pick nodes from (check `sinfo`)
+# #SBATCH --partition=
+
+# Any nodes to exclude from selection
+# #SBATCH --exclude=charles[05,12-18]
+
+
+# =====================
+# Logging information
+# =====================
+
+# slurm info - more at https://slurm.schedmd.com/sbatch.html#lbAJ
+echo "Job running on ${SLURM_JOB_NODELIST}"
+
+dt=$(date '+%d/%m/%Y %H:%M:%S')
+echo "Job started: $dt"
+
+
+# ===================
+# Environment setup
+# ===================
+
+# Make available all commands on $PATH as on headnode
 source ~/.bashrc
-set -e  # make script bail out after first error
 
-# slurm info
-echo "I'm running on ${SLURM_JOB_NODELIST}"
+# Make script bail out after first error
+set -e
 
-dt=$(date '+%d/%m/%Y %H:%M:%S');
-echo $dt
+# Make your own folder on the node's scratch disk
+# N.B. disk could be at /disk/scratch_big, or /disk/scratch_fast. Check
+# yourself using an interactive session, or check the docs:
+#     http://computing.help.inf.ed.ac.uk/cluster-computing
+SCRATCH_DISK=/disk/scratch
+SCRATCH_HOME=${SCRATCH_DISK}/${USER}
+mkdir -p ${SCRATCH_HOME}
 
-# Set environment variables for input and output data
-echo 'Setting experiment environment variables'
-export STUDENT_ID=$(whoami)
-export SCRATCH_HOME=/disk/scratch/${STUDENT_ID}
-mkdir -p ${SCRATCH_HOME}  # making your folder on the charles node's hard drive
-
-
-################ Setting up data shit #################
-echo 'Moving data from the cluster filesystem to the hard drive of the Charles node'
-# Zipped file on the cluster filesystem (glusterfs....slow!)
-dirname=mts_archive
-source=/home/s0910166/git/DNNTSC/archives/${dirname}.zip
-
-data_home=/disk/scratch/s0910166/data
-mkdir -p ${data_home}
-
-# Where we want to put data zip on the charles node's hard drive
-target=${data_home}/${dirname}.zip
+# Activate your conda environment
+CONDA_ENV_NAME=cs_example
+conda activate ${CONDA_ENV_NAME}
 
 
-rsync -ua --progress ${source} ${target}  # copy data from source to target location
-                                          # (will only do it if it needs to)
+# ===========================
+# Move data to scratch disk
+# ===========================
+# Move data from a source location, probably on the distributed filesystem
+# (DFS), to the scratch space on the selected node.
+# 1. Your code should read and write data on the scratch space, *not* the DFS.
+#    This is extremely slow as the data must stay consistent on *all* nodes,
+#    incurring much network traffic and waiting time
+# 2. If you have lots of small files, either move them in batches of 1000 files
+#    or fewer, or move a zipped file e.g. moving 10,000 files is 70 times
+#    slower than moving 1,000
+#
+# This example assumes you have zipped your data on the DFS, copies that file
+# to the scratch space, and unzips it. 
+#
+# For more guidelines about moving files between the distributed filesystem and
+# the scratch space on the nodes, see:
+#     http://computing.help.inf.ed.ac.uk/cluster-tips
 
-if [ -d "${data_home}/${dirname}" ]; then
-    echo "Assuming zip already extracted..."
-else
-    echo "Extracting zip..."
-    unzip ${target} -d ${data_home}
-fi
+# zip location on the DFS
+src_zip_path=/home/${USER}/git/project_name/data/input/all_data.zip
 
-# Activate the relevant virtual environment
-echo "Activating virtual environment"
-conda activate mvtsc
+# directory to put the zip on the scratch disk
+target_dir=${SCRATCH_HOME}/project_name/data/input
+mkdir -p ${target_dir}  # make it if required
+
+# rsync options - https://ss64.com/bash/rsync.html
+rsync -ua --progress ${src_zip_path} ${target_dir}
+
+# unzip, -n skips files which already exist. Slower but safer without this...
+zip_filename=${src_zip_path##*/}
+unzip -n ${target_dir}/${zip_filename} -d ${target_dir}
 
 
-# Run the python script that will train our network
+# ==============================
+# Finally, run the experiment!
+# ==============================
+# Read line number ${SLURM_ARRAY_TASK_ID} from the experiment file and run it
+# ${SLURM_ARRAY_TASK_ID} is simply the number of the job in the within the
+# array. If you execute `sbatch --array=1:100 ...` the jobs will get numbers
+# 1 to 100 inclusive.
+
 experiment_text_file=$1
 COMMAND="`sed \"${SLURM_ARRAY_TASK_ID}q;d\" ${experiment_text_file}`"
-echo "Running provided command: $COMMAND"
-eval "$COMMAND"
+echo "Running provided command: ${COMMAND}"
+eval "${COMMAND}"
 
+
+# =========================
+# Post experiment logging
+# =========================
+echo ""
 echo "============"
 echo "job finished successfully"
+dt=$(date '+%d/%m/%Y %H:%M:%S')
+echo "Job finished: $dt"
