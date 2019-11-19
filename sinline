@@ -16,6 +16,9 @@ Arguments:
         argument submitted to python)
     -s sbatch_args
         Arguments to supply to sbatch wrapped as a string
+    -k
+        Keep logs ./sbatch_std{out,err}.log and script /tmp/bash_script.sh
+        i.e. don't clean up (useful for debugging)
 
 Example call:
     $ sinline -n charles01 -c 'echo "It'\''s so convenient!"' -s '--time=00:01:00 -p Interactive'
@@ -32,13 +35,15 @@ EOM
 node=''
 cmd=''
 sbatch_args=''
+cleanup=1
 
 # Parse args
-while getopts 'n:s:c:' flag; do
+while getopts 'n:s:c:k' flag; do
   case "${flag}" in
     n) node="${OPTARG}" ;;
     s) sbatch_args="${OPTARG}" ;;
     c) cmd="${OPTARG}" ;;
+    k) cleanup=0 ;;
     *) print_usage
        exit ;;
   esac
@@ -77,6 +82,7 @@ cat sbatch_stdout.log >&1
 cat sbatch_stderr.log >&2
 
 # Clean up
-rm sbatch_std{out,err}.log
-rm /tmp/bash_script.sh
-
+if [ "${cleanup}" -eq "1" ]; then
+  rm sbatch_std{out,err}.log
+  rm /tmp/bash_script.sh
+fi
