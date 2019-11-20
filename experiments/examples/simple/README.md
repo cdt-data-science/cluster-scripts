@@ -15,9 +15,12 @@ gridsearch. Each line is the command to run one setting of the gridsearch.
 command, and be run on the selected node
 
 ### 0. Setup and start an interactive session
-Firstly, make sure you have made `run_experiment` available by running the
-setup instructions in the [README](../../README.md) in the base directory
-for slurm experiments.
+Firstly, if you haven't already, clone this repository, following the
+[base README.md](../../../README.md) installation instructions.
+
+Next, make sure you have made `run_experiment` available by running the
+setup instructions in the [slurm experiments README](../../README.md) in 
+the base directory for slurm experiments.
 
 **IMPORTANT NOTE:** Running processes locally i.e. here on the headnode (the
 node you arrive at when you ssh to a given cluster) is **VERY BAD**! The
