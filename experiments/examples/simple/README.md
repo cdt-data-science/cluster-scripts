@@ -55,7 +55,7 @@ Well actually...
 ![I LIED](data/input/spurious_data.gif)
 
 we've made one for you! This will read data, configure the model, and return
-results. Try running the file will different options to see how it works:
+results. Try running the file with different options to see how it works:
 ```
 # edit this if you cloned the repo elsewhere
 repo_dir=/home/$USER/git/cluster-scripts
