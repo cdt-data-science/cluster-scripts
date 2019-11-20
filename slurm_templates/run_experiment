@@ -38,7 +38,7 @@ Arguments:
      specified in slurm_arrayjob.sh
     
 Example call:
-  $ run_experiment.sh -b example/slurm_arrayjob.sh -e example/experiments.txt \\
+  $ run_experiment -b example/slurm_arrayjob.sh -e example/experiments.txt \\
       -m 12 --cpus-per-task=4 --gres=gpu:1 --mem=8000
 
   If example/experiments.txt contains 1000 lines, this would result in the

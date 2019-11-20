@@ -16,7 +16,7 @@ gridsearch. Each line is the command for one setting of the gridsearch.
 command, and be run on the selected node
 
 ### 0. Setup and start an interactive session
-Firstly, make sure you have made `run_experiment.sh` available by running the
+Firstly, make sure you have made `run_experiment` available by running the
 setup instructions in the [README](../README.sh) in the directory above here.
 
 **IMPORTANT NOTE:** Running processes locally i.e. here on the headnode (the

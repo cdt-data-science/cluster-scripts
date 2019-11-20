@@ -1,10 +1,10 @@
 # Templates for running experiments with slurm
-These templates and accompanying wrapper function `run_experiment.sh`
+These templates and accompanying wrapper function `run_experiment`
 facilitate a simple framework for running batches of commands:
 1. Make a file which contains a command to run on each line
 2. Run every line in that file in parallel using a slurm `sbatch --array...`
 
-The script `run_experiment.sh` is essentially a wrapper for the slurm command
+The script `run_experiment` is essentially a wrapper for the slurm command
 `sbatch --array...`. It sets off all the jobs to run in parallel when you give
 it:
 1. *a text file* containing all the experiments you want to run, one experiment
@@ -25,7 +25,7 @@ different models, or running all your baselines.
 
 ## Setup
 Add the script(s) in this directory to your path (essentially allows you to run
-`run_experiment.sh` from anywhere):
+`run_experiment` from anywhere):
 ```
 echo "export PATH=/home/$USER/git/cluster-scripts/slurm_templates:\$PATH" >> ~/.bashrc
 source ~/.bashrc
@@ -55,7 +55,7 @@ ls ${code_dir}
 ```
 4. run your experiment! e.g.
 ```
-run_experiment.sh -b ${code_dir}/slurm_arrayjob.sh \
+run_experiment -b ${code_dir}/slurm_arrayjob.sh \
     -e ${code_dir}/experiments.txt \
     -m 12 --cpus-per-task=4 --gres=gpu:1 --mem=8000
 ```
