@@ -78,7 +78,7 @@ mkdir -p ${dest_path}  # make it if required
 # * --compress is going to compress the data into *a single file* before
 #   transfer. THIS IS IMPORTANT - transferring many files is very very slow
 # for more about the (endless) rsync options - https://ss64.com/bash/rsync.html
-rsync --archive --update --compress --progress ${src_path} ${dest_path}
+rsync --archive --update --compress --progress ${src_path}/ ${dest_path}
 
 
 # ==============================
@@ -103,7 +103,7 @@ echo "Moving output data back to DFS"
 
 src_path=${SCRATCH_HOME}/simple/data/output
 dest_path=${proj_home}/experiments/examples/simple/data/output
-rsync --archive --update --compress --progress ${src_path} ${dest_path}
+rsync --archive --update --compress --progress ${src_path}/ ${dest_path}
 
 
 # =========================
