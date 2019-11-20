@@ -11,7 +11,7 @@ should take you no more than 20 minutes to complete.
 ## Exercise
 We're going to:
 1. make a file `experiment.txt` which contains all the commands to run our
-gridsearch. Each line is the command for one setting of the gridsearch.
+gridsearch. Each line is the command to run one setting of the gridsearch.
 1. make a file `slurm_arrayjob.sh` which will be passed to the `sbatch`
 command, and be run on the selected node
 
@@ -26,7 +26,7 @@ it with lots of additional jobs, it will slow everything down for everyone.
 Thankfully, it's easy to simply jump on one of the nodes in the cluster and
 work from there - everything works the same as if you were on the headnode:
 ```
-cluster_name=cdtcluster
+cluster_name=cdtcluster  # e.g. mlp or ilcc-cluster
 ssh ${USER}@${cluster_name}.inf.ed.ac.uk
 
 # Run this slurm command to be allocated to a node in the default partition
@@ -36,13 +36,26 @@ srun --time=02:00:00 --mem=4000 --cpus-per-task=1 --pty bash
 
 When you are finished, execute the `exit` command to return to the headnode.
 
+Tip - if the `srun` command is taking a long time to allocate you an
+interactive session, run `sinfo` and estabish if you should use a specific
+partition for this. For example:
+```
+$ sinfo
+> PARTITION         AVAIL  TIMELIMIT  NODES  STATE NODELIST
+> Teach-Interactive    up    2:00:00      3   idle landonia[01,03,25]
+> ...
+> PGR-Interactive      up    2:00:00      1  down* damnii01
+> ...
+$ srun --partition=PGR-Interactive ...
+```
+
 ### 1. Make a python script to run an experiment `train.py`
 We've made one for you! This will read data, configure the model, and return
 results. Try running the file will different options to see how it works:
 ```
 # edit this if you cloned the repo elsewhere
-repo_dir=/home/$USER/git/cluster-scripts  
-cd $repo_dir/examples/simple
+repo_dir=/home/$USER/git/cluster-scripts
+cd $repo_dir/slurm_templates/examples/simple
 # Running without any options should show the 'help'
 python3 train.py
 # Try setting some of the options
