@@ -2,11 +2,18 @@
 
 set -e
 
-# TODO: make a _gpu and non version
+default_time="08:00:00"
 
-default_args="--time=08:00:00 --mem=14000 --cpus-per-task=4 --gres=gpu:1"
+# Exceptions to defaults
+if [ "$HOSTNAME" = "uhtred.inf.ed.ac.uk" ]; then
+  # mlp cluter has a max time of 2hrs
+  default_time="02:00:00"
+fi
 
-read -r -d '' default_msg << EOM
+default_args="--time=${default_time} --mem=14000 --cpus-per-task=4 --gres=gpu:1"
+
+print_welcome () {
+  cat << EOM
 =============================== WELCOME MESSAGE ===============================
 It's good practice to set a few parameters when using srun (this command is
 essentailly an alias for 'srun --pty bash'). We have added some default
@@ -38,9 +45,15 @@ For more informtion about node configuration, see the computing support docs:
 
 ===============================================================
 EOM
+}
 
 print_usage () {
   cat << EOM
+A shortcut to get you an interactive session. Will attempt to get a session on
+a node which is in a partition with 'interactive' in its name. You can hit
+ctrl-c at any time, and it will try another partition if there is one
+available to try.
+
 Usage: $0 [-h] [other args for srun] 
 
 Arguments:
@@ -58,6 +71,7 @@ EOM
 while getopts 'h' flag; do
   case "${flag}" in
     h) print_usage
+       print_welcome
        exit 1 ;;
   esac
 done
@@ -93,7 +107,7 @@ if [ -z "$interactive_partitions" ]; then
   exit 0  # <-------------- EXIT 2 (no args, no interactive partitions)
 else
   succeeded=0
-  for partition in $interactive_partitions"; do
+  for partition in $interactive_partitions; do
     get_interactive_session --partition=${partition} ${args} \
       && succeeded=1 \
       || true
