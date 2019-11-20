@@ -130,18 +130,42 @@ You're in luck, because we have made you just such a script! Have a look at
 1. does the data get moved every time?
 1. why are these different places?
 1. where is the output data?
+1. what happens to the output data if you do a second run of the experiment?
 1. how does the script run different lines of experiment.txt?
 
 
 ### 4. Run your experiment!
 Finally, it's time to see it in action. To set off all the jobs, run:
 ```
-sbatch --array=1-%${MAX_PARALLEL_JOBS} $SBATCH_ARGS $BASH_SCRIPT $EXPT_FILE
+sbatch --array=1-35%10 slurm_arrayjob.sh experiment.txt
+```
+
+To observe your jobs running, you can execute:
+```
+myjobs  # shorthand for squeue -u ${USER}
+# or if you want to see it in real time
+watch myjobs  # hit ctrl-c to exit
+```
+
+You'll find all the logs printed in the current working directory:
+```
+ls
+cat slurm-*
 ```
 
 A more general way of doing the above (which doesn't rely on you knowing the
-number of lines in experiment.txt)
+number of lines in experiment.txt):
+```
 run_experiment -b slurm_arrayjob.sh -e experiment.txt
+```
+
+With any luck, you should now have all your results!
+```
+ls data/output
+tail -n +1 data/output/*  # a little trick to print filenames and file contents
+```
+
+**CONGRATULATIONS!** You just used the cluster to run all your experiments!
 
 
 ## Answers
@@ -175,8 +199,15 @@ run_experiment -b slurm_arrayjob.sh -e experiment.txt
     from the node's scratch disk, write your results there, and then copy the
     results over at the end of the job
 1. where is the output data?
-    * Well, it's contained both on the scratch disk of the node, and on the
-    DFS. The last part of `slurm_arrayjob.sh` moves the data back to the DFS.
+    * Well, the output for individual runs is contained on the scratch disk
+    of the node, but the almalgamated outputs are sent back to the DFS. The
+    last part of `slurm_arrayjob.sh` moves the data back to the DFS.
+1. what happens to the output data if you do a second run of the experiment?
+    * The scratch disk of each node will now have two files inside. However,
+    when rsync looks at these two files and compares them with the files on the
+    DFS, it will decide to only send the one newer file (as the older file on
+    scratch will either be unchanged on the DFS, or a newer file will already
+    exist on the DFS)
 1. how does the script run different lines of experiment.txt?
     * The script takes one argument as input - the path to the experiment file.
     It uses the slurm environment variable ${SLURM_ARRAY_TASK_ID} - if you
