@@ -13,7 +13,6 @@ base_call = f"python3 train.py -i {DATA_HOME}/input -o {DATA_HOME}/output"
 
 learning_rates = [1e-6, 1e-5, 1e-4, 1e-3, 1e-2]
 weight_decays = [1e-6, 1e-5, 1e-4, 1e-3, 1e-2]
-nr_expts = len(learning_rates) * len(weight_decays)
 
 settings = [(lr, wd) for lr in learning_rates for wd in weight_decays]
 
