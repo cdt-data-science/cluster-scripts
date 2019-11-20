@@ -68,7 +68,7 @@ In this section we explain a little about what's going on under the hood.
 [Slurm](https://slurm.schedmd.com/) is the workload manager which is used on
 most of the GPU clusters in informatics, and elsewhere. For example:
 ```
-ssh ${USER}@cdtcluster.inf.ed.ac.uk  # 
+ssh ${USER}@cdtcluster.inf.ed.ac.uk
 ssh ${USER}@mlp.inf.ed.ac.uk
 ssh ${USER}@ilcc-cluster.inf.ed.ac.uk
 ```
