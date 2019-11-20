@@ -88,7 +88,15 @@ the experiment file. Have a look at the file!
 cd $repo_dir/experiments/examples/simple
 python3 gen_experiment.py
 head experiment.txt
+wc experiment.txt
 ```
+
+You should be able to answer the following:
+1. How many jobs are we going to run in our gridsearch
+1. If each job was going to take around an hour, and we are able to run 10
+   jobs in parallel at any given time, how long will the full experiment take
+   to run
+
 
 ### 3. Create the slurm_arrayjob.sh - the bash script for the slurm arrayjob
 Well actually...
@@ -112,6 +120,13 @@ Run your gridsearch
 
 ## Answers
 
+### 2.
+1. 35 - 5 learning rates x 7 weight decays
+1. It's a fair estimate to say 3.5 hours, but actually it will take 4 hours:
+   when the 3rd batch of 10 concurrent jobs have finished, you've still got
+   5 left over, which will still take an hour
+
+### 3.
 1. where is the data located on the distributed filesystem?
     * Well...right here! Specifically, if you cloned this git repo to
     `~/git/cluster-scripts`, as recommended, this location has the same path
