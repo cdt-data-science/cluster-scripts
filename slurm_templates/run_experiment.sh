@@ -5,7 +5,7 @@ print_usage () {
   cat << EOM
   
 Usage: 
-  $0 -t path/to/slurm_arrayjob.sh -e path/to/experiment.txt \\
+  $0 -b path/to/slurm_arrayjob.sh -e path/to/experiment.txt \\
       [-m max_nr_parallel_jobs] [sbatch_args]
 
   Convenience function for running arrayjob experiments with slurm. Expects
@@ -18,7 +18,7 @@ Usage:
 
 Arguments:
 
-  -t path/to/slurm_arrayjob.sh : str
+  -b path/to/slurm_arrayjob.sh : str
      the path to the bash script to supply to sbatch. This script contains the
      configuration for the sbatch arrayjob and takes experiment.txt as an 
      argument. It uses the slurm variable $SLURM_ARRAY_TASK_ID to select a line
@@ -38,7 +38,7 @@ Arguments:
      specified in slurm_arrayjob.sh
     
 Example call:
-  $ run_experiment.sh -t example/slurm_arrayjob.sh -e example/experiments.txt \\
+  $ run_experiment.sh -b example/slurm_arrayjob.sh -e example/experiments.txt \\
       -m 12 --cpus-per-task=4 --gres=gpu:1 --mem=8000
 
   If example/experiments.txt contains 1000 lines, this would result in the
@@ -55,9 +55,9 @@ EXPT_FILE=""
 MAX_PARALLEL_JOBS=10
 
 # Parse args
-while getopts 't:e:m:h' flag; do
+while getopts 'b:e:m:h' flag; do
   case "${flag}" in
-    t) BASH_SCRIPT="${OPTARG}" ;;
+    b) BASH_SCRIPT="${OPTARG}" ;;
     e) EXPT_FILE="${OPTARG}" ;;
     m) MAX_PARALLEL_JOBS="${OPTARG}" ;;
     h) print_usage

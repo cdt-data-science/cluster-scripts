@@ -55,7 +55,7 @@ ls ${code_dir}
 ```
 4. run your experiment! e.g.
 ```
-run_experiment.sh -t ${code_dir}/slurm_arrayjob.sh \
+run_experiment.sh -b ${code_dir}/slurm_arrayjob.sh \
     -e ${code_dir}/experiments.txt \
     -m 12 --cpus-per-task=4 --gres=gpu:1 --mem=8000
 ```

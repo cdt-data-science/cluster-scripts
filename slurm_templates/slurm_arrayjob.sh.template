@@ -16,7 +16,7 @@
 #
 # or, equivalently and as intended, with provided `run_experiement.sh`:
 # ```
-# run_experiment.sh -t slurm_arrayjob.sh -e experiments.txt -m 12
+# run_experiment.sh -b slurm_arrayjob.sh -e experiments.txt -m 12
 # ```
 
 
