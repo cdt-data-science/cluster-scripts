@@ -23,40 +23,40 @@ project e.g. different grid searches over parameters, investigating
 different models, or running all your baselines.
 
 
-## Quickstart
-For a fuller explanation of these steps, see below or check out the
-`./examples` directory for fully worked examples.
-
-1. add scripts in this directory to your path (essentially allows you to run
-   `run_experiment.sh` from anywhere)
+## Setup
+Add the script(s) in this directory to your path (essentially allows you to run
+`run_experiment.sh` from anywhere):
 ```
 echo "export PATH=/home/$USER/git/cluster-scripts/slurm_templates:\$PATH" >> ~/.bashrc
 source ~/.bashrc
 ```
-2. copy the bash script template to your project's home directory and customise
-   it for your use (i.e. fill in your own paths, change the data `rsync` etc.).
-   An example is given here:
-   [slurm_arrayjob.sh](examples/simple/slurm_arrayjob.sh)
+
+## Quickstart
+For a fuller explanation of these steps, see below or check out the
+`./examples` directory for fully worked examples. The below explains usage of
+the template:
+
+1. follow the setup above
+2. copy `slurm_arrayjob.sh.template` to your project's home directory and
+   customise it for your use:
 ```
 code_dir=your/project/home/dir
 cp slurm_arrayjob.sh.template ${code_dir}/slurm_arrayjob.sh
 vim ${code_dir}/slurm_arrayjob.sh
 ```
 3. create an experiment file; each line contains a command to execute which
-   will run one of your experiments. Protip: it will likely be easiest, not to
-   mention facilitate reproducibility, if you whip up a script which will
-   generate this file for you (there are examples in the `examples` directory)
+   will run one of your experiments:
 ```
 python ${code_dir}/gen_experiments.py
 ls ${code_dir}
-    ...
-    experiments.txt
-    ...
+>    ...
+>    experiments.txt
+>    ...
 ```
 4. run your experiment! e.g.
 ```
-run_experiment.sh -t ${code_dir}/slurm_arrayjob.sh \\
-    -e ${code_dir}/experiments.txt \\
+run_experiment.sh -t ${code_dir}/slurm_arrayjob.sh \
+    -e ${code_dir}/experiments.txt \
     -m 12 --cpus-per-task=4 --gres=gpu:1 --mem=8000
 ```
 

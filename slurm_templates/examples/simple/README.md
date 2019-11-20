@@ -15,7 +15,10 @@ gridsearch. Each line is the command for one setting of the gridsearch.
 1. make a file `slurm_arrayjob.sh` which will be passed to the `sbatch`
 command, and be run on the selected node
 
-### 0. Start an interactive session
+### 0. Setup and start an interactive session
+Firstly, make sure you have made `run_experiment.sh` available by running the
+setup instructions in the [README](../README.sh) in the directory above here.
+
 **IMPORTANT NOTE:** Running processes locally i.e. here on the headnode (the
 node you arrive at when you ssh to a given cluster) is **VERY BAD**! The
 headnode is responsible for coordinating all the jobs for slurm; if we clog
