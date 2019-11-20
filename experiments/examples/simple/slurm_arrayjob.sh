@@ -74,10 +74,16 @@ src_path=${proj_home}/experiments/examples/simple/data/input
 dest_path=${SCRATCH_HOME}/simple/data/input
 mkdir -p ${dest_path}  # make it if required
 
-# Important note about the options here:
-# * --compress is going to compress the data into *a single file* before
-#   transfer. THIS IS IMPORTANT - transferring many files is very very slow
-# for more about the (endless) rsync options - https://ss64.com/bash/rsync.html
+# Important notes about rsync:
+# * the --compress option is going to compress the data before transfer to send
+#   as a stream. THIS IS IMPORTANT - transferring many files is very very slow
+# * the final slash at the end of ${src_path}/ is important if you want to send
+#   its contents, rather than the directory itself. For example, without a
+#   final slash here, we would create an extra directory at the destination:
+#       ${SCRATCH_HOME}/project_name/data/input/input
+# * for more about the (endless) rsync options, see the docs:
+#       https://download.samba.org/pub/rsync/rsync.html
+
 rsync --archive --update --compress --progress ${src_path}/ ${dest_path}
 
 
