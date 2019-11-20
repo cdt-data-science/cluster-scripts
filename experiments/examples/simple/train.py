@@ -3,6 +3,7 @@
 import argparse
 import os
 import random
+import time
 from glob import glob
 
 
@@ -30,6 +31,12 @@ def main(args):
     for path in glob(f'{inpath}/*'):
         print(f'Nommed: {path}')
     print(f"I'm gonna use a learning rate of {lr} and weight decay of {wd}")
+    for ii in range(10):
+        print(f'Training model {ii * "."}', end='\r')
+        # model.learn()
+        time.sleep(1)
+    else:
+        print(f'Training model {ii * "."}')
     accuracy = random.random()
     print(f'The model accuracy was {accuracy}...very precision, such learn.')
     if not os.path.exists(outpath):
