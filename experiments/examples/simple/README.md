@@ -1,8 +1,7 @@
 # Simple example
 
-This example mocks up what your experimental setup might look up. We've
-provided you with a file `train.py` which reads "data" and "trains" your
-"model" :smirk:. We're going to conduct a fake gridsearch over some parameters.
+This example mocks up what your experimental setup might look like: we're
+going to conduct a gridsearch over some parameters.
 
 Follow the excercise below. This illustrates the experiment framework and
 should take you no more than 20 minutes to complete.
