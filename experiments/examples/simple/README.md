@@ -57,8 +57,11 @@ Well actually...
 
 ![I LIED](data/input/spurious_data.gif)
 
-we've made one for you! This will read data, configure the model, and return
-results. Try running the file with different options to see how it works:
+We've made one for you! This will read data, configure the model, and return
+results. Have a look at the file you're going to run (either on the server with
+e.g. `cat train.py` or in your browser [train.py](train.py)).
+
+Try running the file with different options to see how it works:
 ```
 # edit this if you cloned the repo elsewhere
 repo_dir=/home/$USER/git/cluster-scripts
@@ -67,8 +70,10 @@ cd $repo_dir/experiments/examples/simple
 # Print the man page
 python3 train.py -h
 
-# Try setting some of the options
+# Set the input path and output path, with arguments -i and -o, and run!
 python3 train.py -i data/input -o data/output
+
+# You have just run an experiment! Check out what it did...
 ls data/output
 cat data/output/*
 
@@ -80,6 +85,10 @@ cat data/output/*
 # Which learning rate was more accurate?!
 ```
 
+You should be able to answer the following:
+1. What are the arguments you can supply to `train.py`
+1. Which arguments are optional, and what happens if you do not set them?
+
 ### 2. Create experiment.txt - the commands to run
 So, we want to make a file which lists all the experiments you want to run, like
 you were doing manually in step 1, but you want to do 1000s. We have made a
@@ -88,6 +97,10 @@ file is a good idea for you to do in general because it's:
 1. much quicker than manually writing, copy pasting, and editing
 1. much *safer* (it's reproducible!)
 1. easy to make another file with slightly different settings
+
+Again have a look at the file you're going to run (either on the server with
+e.g. `cat gen_experiment.py` or in your browser
+[gen_experiment.py](gen_experiment.py)).
 
 In your terminal, change the directory to here, and run the script to make
 the experiment file. Have a look at the file!
@@ -170,14 +183,35 @@ tail -n +1 data/output/*  # a little trick to print filenames and file contents
 
 **CONGRATULATIONS!** You just used the cluster to run all your experiments!
 
+You can delete your logs easily using:
+```
+rm slurm-*.log
+```
+
 
 ## Answers
 
+### 1.
+1. What are the arguments you can supply to `train.py`
+    * There are 4 arguments:
+        * `-i INPUT` - path to read the input data from
+        * `-o OUTPUT` - path output data should be written to
+        * `--lr` - learning rate to use
+        * `--weight_decay` - weight_decay to use
+1. Which arguments are optional, and what happens if you do not set them?
+    `--lr` and `--weight_decay` are optional. If you don't specify them the
+    default values are used. The default values are 1e-4 and 0.01 respectively
+    (you can find this specified in the script)
+
 ### 2.
-1. 35 - 5 learning rates x 7 weight decays
-1. It's a fair estimate to say 3.5 hours, but actually it will take 4 hours:
-   when the 3rd batch of 10 concurrent jobs have finished, you've still got
-   5 left over, which will still take an hour
+1. How many jobs are we going to run in our gridsearch
+    * 35 - 5 learning rates x 7 weight decays
+1. If each job was going to take around an hour, and we are able to run 10
+   jobs in parallel at any given time, how long will the full experiment take
+   to run
+    * It's a fair estimate to say 3.5 hours, but actually it will take 4 hours:
+    when the 3rd batch of 10 concurrent jobs have finished, you've still got
+    5 left over, which will still take an hour
 
 ### 3.
 1. where is the data located on the distributed filesystem?
