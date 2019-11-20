@@ -15,11 +15,6 @@ learning_rates = [1e-6, 1e-5, 1e-4, 1e-3, 1e-2]
 weight_decays = [1e-6, 1e-5, 1e-4, 1e-3, 1e-2, 1e-1, 1] 
 nr_expts = len(learning_rates) * len(weight_decays)
 
-nr_servers = 10
-avg_expt_time = 60  # mins
-print(f'Total experiments = {nr_expts}')
-print(f'Estimated time = {(nr_expts / nr_servers * avg_expt_time)/60} hrs')
-
 settings = [(lr, wd) for lr in learning_rates for wd in weight_decays]
 
 output_file = open("experiment.txt", "w")

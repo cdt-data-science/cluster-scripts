@@ -1,10 +1,9 @@
 # Simple example
 
-This example mocks up what your experimental setup might look up. We've
-provided you with a file `train.py` which reads "data" and "trains" your
-"model" :smirk:. We're going to conduct a fake gridsearch over some parameters.
+This example mocks up what your experimental setup might look like: we're
+going to conduct a gridsearch over some parameters.
 
-Follow the excercise below. This illustrates the experiment framework and
+Follow the exercise below. This illustrates the experiment framework and
 should take you no more than 20 minutes to complete.
 
 
@@ -16,8 +15,12 @@ gridsearch. Each line is the command to run one setting of the gridsearch.
 command, and be run on the selected node
 
 ### 0. Setup and start an interactive session
-Firstly, make sure you have made `run_experiment` available by running the
-setup instructions in the [README](../README.sh) in the directory above here.
+Firstly, if you haven't already, clone this repository, following the
+[base README.md](../../../README.md) installation instructions.
+
+Next, make sure you have made `run_experiment` available by running the
+setup instructions in the [slurm experiments README](../../README.md) in 
+the base directory for slurm experiments.
 
 **IMPORTANT NOTE:** Running processes locally i.e. here on the headnode (the
 node you arrive at when you ssh to a given cluster) is **VERY BAD**! The
@@ -37,7 +40,7 @@ srun --time=02:00:00 --mem=4000 --cpus-per-task=1 --pty bash
 When you are finished, execute the `exit` command to return to the headnode.
 
 Tip - if the `srun` command is taking a long time to allocate you an
-interactive session, run `sinfo` and estabish if you should use a specific
+interactive session, run `sinfo` and establish if you should use a specific
 partition for this. For example:
 ```
 $ sinfo
@@ -55,7 +58,7 @@ Well actually...
 ![I LIED](data/input/spurious_data.gif)
 
 we've made one for you! This will read data, configure the model, and return
-results. Try running the file will different options to see how it works:
+results. Try running the file with different options to see how it works:
 ```
 # edit this if you cloned the repo elsewhere
 repo_dir=/home/$USER/git/cluster-scripts
@@ -78,7 +81,7 @@ cat data/output/*
 ```
 
 ### 2. Create experiment.txt - the commands to run
-So, we want to make a file which list all the experiments you want to run, like
+So, we want to make a file which lists all the experiments you want to run, like
 you were doing manually in step 1, but you want to do 1000s. We have made a
 script which will generate this file for you. Generating your experiments.txt
 file is a good idea for you to do in general because it's:
@@ -200,7 +203,7 @@ tail -n +1 data/output/*  # a little trick to print filenames and file contents
     results over at the end of the job
 1. where is the output data?
     * Well, the output for individual runs is contained on the scratch disk
-    of the node, but the almalgamated outputs are sent back to the DFS. The
+    of the node, but the amalgamated outputs are sent back to the DFS. The
     last part of `slurm_arrayjob.sh` moves the data back to the DFS.
 1. what happens to the output data if you do a second run of the experiment?
     * The scratch disk of each node will now have two files inside. However,
