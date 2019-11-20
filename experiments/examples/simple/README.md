@@ -16,7 +16,7 @@ command, and be run on the selected node
 
 ### 0. Setup and start an interactive session
 Firstly, make sure you have made `run_experiment` available by running the
-setup instructions in the [README](../README.sh) in the directory above here.
+setup instructions in the [README](../README.md) in the directory above here.
 
 **IMPORTANT NOTE:** Running processes locally i.e. here on the headnode (the
 node you arrive at when you ssh to a given cluster) is **VERY BAD**! The
