@@ -25,7 +25,7 @@ different models, or running all your baselines.
 
 ## Quickstart
 For a fuller explanation of these steps, see below or check out the
-`./example` directory for a full worked example.
+`./examples` directory for fully worked examples.
 
 1. add scripts in this directory to your path (essentially allows you to run
    `run_experiment.sh` from anywhere)
@@ -36,7 +36,7 @@ source ~/.bashrc
 2. copy the bash script template to your project's home directory and customise
    it for your use (i.e. fill in your own paths, change the data `rsync` etc.).
    An example is given here:
-   [example/slurm_arrayjob.sh](example/slurm_arrayjob.sh)
+   [slurm_arrayjob.sh](examples/simple/slurm_arrayjob.sh)
 ```
 code_dir=your/project/home/dir
 cp slurm_arrayjob.sh.template ${code_dir}/slurm_arrayjob.sh
@@ -45,7 +45,7 @@ vim ${code_dir}/slurm_arrayjob.sh
 3. create an experiment file; each line contains a command to execute which
    will run one of your experiments. Protip: it will likely be easiest, not to
    mention facilitate reproducibility, if you whip up a script which will
-   generate this file for you (there's an example in the `example` directory)
+   generate this file for you (there are examples in the `examples` directory)
 ```
 python ${code_dir}/gen_experiments.py
 ls ${code_dir}

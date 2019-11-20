@@ -1,6 +1,5 @@
 #!/bin/bash
 # Author(s): James Owers (james.f.owers@gmail.com)
-# Last updated: Nov 2019
 #
 # Template for running an sbatch arrayjob with a file containing a list of
 # commands to run. Copy this, remove the .template, and edit as you wish to
@@ -73,6 +72,8 @@ echo "Job started: $dt"
 # Environment setup
 # ===================
 
+echo "Setting up bash enviroment"
+
 # Make available all commands on $PATH as on headnode
 source ~/.bashrc
 
@@ -89,42 +90,41 @@ mkdir -p ${SCRATCH_HOME}
 
 # Activate your conda environment
 CONDA_ENV_NAME=cs_example
+echo "Activating conda environment: ${CONDA_ENV_NAME}"
 conda activate ${CONDA_ENV_NAME}
 
 
-# ===========================
-# Move data to scratch disk
-# ===========================
+# =================================
+# Move input data to scratch disk
+# =================================
 # Move data from a source location, probably on the distributed filesystem
-# (DFS), to the scratch space on the selected node.
-# 1. Your code should read and write data on the scratch space, *not* the DFS.
-#    This is extremely slow as the data must stay consistent on *all* nodes,
-#    incurring much network traffic and waiting time
-# 2. If you have lots of small files, either move them in batches of 1000 files
-#    or fewer, or move a zipped file e.g. moving 10,000 files is 70 times
-#    slower than moving 1,000
+# (DFS), to the scratch space on the selected node. Your code should read and
+# write data on the scratch space attached directly to the compute node (i.e.
+# not distributed), *not* the DFS. Writing/reading from the DFS is extremely
+# slow because the data must stay consistent on *all* nodes. This constraint
+# results in much network traffic and waiting time for you!
 #
-# This example assumes you have zipped your data on the DFS, copies that file
-# to the scratch space, and unzips it. 
+# This example assumes you have a folder containing all your input data on the
+# DFS, and it copies all that data  file to the scratch space, and unzips it. 
 #
 # For more guidelines about moving files between the distributed filesystem and
 # the scratch space on the nodes, see:
 #     http://computing.help.inf.ed.ac.uk/cluster-tips
 
-# zip location on the DFS
-src_zip_path=/home/${USER}/git/project_name/data/input/all_data.zip
+echo "Moving input data to the compute node's scratch space: $SCRATCH_DISK"
 
-# directory to put the zip on the scratch disk
-target_dir=${SCRATCH_HOME}/project_name/data/input
+# input data directory path on the DFS
+src_path=/home/${USER}/git/project_name/data/input
+
+# input data directory path on the scratch disk of the node
+dest_path=${SCRATCH_HOME}/project_name/data/input
 mkdir -p ${target_dir}  # make it if required
 
-# rsync options - https://ss64.com/bash/rsync.html
-rsync -ua --progress ${src_zip_path} ${target_dir}
-
-# unzip, -n skips files which already exist. Slower but safer without this...
-zip_filename=${src_zip_path##*/}
-unzip -n ${target_dir}/${zip_filename} -d ${target_dir}
-
+# Important note about the options here:
+# * --compress is going to compress the data into *a single file* before
+#   transfer. THIS IS IMPORTANT - transferring many files is very very slow
+# for more about the (endless) rsync options - https://ss64.com/bash/rsync.html
+rsync --archive --update --compress --progress ${src_path} ${dest_path}
 
 # ==============================
 # Finally, run the experiment!
@@ -138,6 +138,20 @@ experiment_text_file=$1
 COMMAND="`sed \"${SLURM_ARRAY_TASK_ID}q;d\" ${experiment_text_file}`"
 echo "Running provided command: ${COMMAND}"
 eval "${COMMAND}"
+echo "Command ran successfully!"
+
+
+# ======================================
+# Move output data from scratch to DFS
+# ======================================
+# This presumes your command wrote data to some known output data. In this
+# example, we zip that data up and send it back to the DFS with rsync
+
+echo "Moving output data back to DFS"
+
+src_path=${SCRATCH_HOME}/project_name/data/output
+dest_path=/home/${USER}/git/project_name/data/input
+rsync --archive --update --compress --progress ${src_path} ${dest_path}
 
 
 # =========================

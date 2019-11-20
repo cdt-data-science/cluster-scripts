@@ -1,6 +1,5 @@
 #!/bin/bash
 # Author(s): James Owers (james.f.owers@gmail.com)
-# Last updated: Nov 2019
 
 print_usage () {
   cat << EOM
