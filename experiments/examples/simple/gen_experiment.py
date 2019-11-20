@@ -12,11 +12,11 @@ DATA_HOME = f'{SCRATCH_HOME}/simple/data'
 base_call = f"python3 train.py -i {DATA_HOME}/input -o {DATA_HOME}/output"
 
 learning_rates = [1e-6, 1e-5, 1e-4, 1e-3, 1e-2]
-weight_decays = [1e-6, 1e-5, 1e-4, 1e-3, 1e-2]
+weight_decays = [1e-6, 1e-5, 1e-4, 1e-3, 1e-2, 1e-1, 1]
 
 settings = [(lr, wd) for lr in learning_rates for wd in weight_decays]
 
-output_file = open("experiments.txt", "w")
+output_file = open("experiment.txt", "w")
 
 for lr, wd in settings:    
     expt_call = (
