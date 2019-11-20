@@ -27,7 +27,7 @@ different models, or running all your baselines.
 Add the script(s) in this directory to your path (essentially allows you to run
 `run_experiment` from anywhere):
 ```
-echo "export PATH=/home/$USER/git/cluster-scripts/slurm_templates:\$PATH" >> ~/.bashrc
+echo "export PATH=/home/$USER/git/cluster-scripts/experiments:\$PATH" >> ~/.bashrc
 source ~/.bashrc
 ```
 

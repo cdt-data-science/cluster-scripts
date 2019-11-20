@@ -55,7 +55,7 @@ results. Try running the file will different options to see how it works:
 ```
 # edit this if you cloned the repo elsewhere
 repo_dir=/home/$USER/git/cluster-scripts
-cd $repo_dir/slurm_templates/examples/simple
+cd $repo_dir/experiments/examples/simple
 # Running without any options should show the 'help'
 python3 train.py
 # Try setting some of the options
@@ -103,7 +103,7 @@ Run your gridsearch
     * Well...right here! Specifically, if you cloned this git repo to
     `~/git/cluster-scripts`, as recommended, this location has the same path
     on all the nodes, i.e.
-    `/home/${USER}/git/cluster-scripts/slurm_templates/examples/simple/data/input.zip`
+    `/home/${USER}/git/cluster-scripts/experiments/examples/simple/data/input.zip`
     points to the distributed filesystem whichever node you are on
 1. where does the python script read the data from?
     * The scratch node of node which the job gets allocated to
