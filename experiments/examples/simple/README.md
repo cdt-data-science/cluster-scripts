@@ -16,7 +16,8 @@ command, and be run on the selected node
 
 ### 0. Setup and start an interactive session
 Firstly, make sure you have made `run_experiment` available by running the
-setup instructions in the [README](../README.sh) in the directory above here.
+setup instructions in the [README](../../README.md) in the base directory
+for slurm experiments.
 
 **IMPORTANT NOTE:** Running processes locally i.e. here on the headnode (the
 node you arrive at when you ssh to a given cluster) is **VERY BAD**! The
@@ -54,7 +55,7 @@ Well actually...
 ![I LIED](data/input/spurious_data.gif)
 
 we've made one for you! This will read data, configure the model, and return
-results. Try running the file will different options to see how it works:
+results. Try running the file with different options to see how it works:
 ```
 # edit this if you cloned the repo elsewhere
 repo_dir=/home/$USER/git/cluster-scripts
