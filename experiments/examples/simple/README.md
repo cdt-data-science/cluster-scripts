@@ -136,9 +136,12 @@ You're in luck, because we have made you just such a script! Have a look at
 ### 4. Run your experiment!
 Finally, it's time to see it in action. To set off all the jobs, run:
 ```
-run_experiment -b slurm_arrayjob.sh -e experiments.txt
+sbatch --array=1-%${MAX_PARALLEL_JOBS} $SBATCH_ARGS $BASH_SCRIPT $EXPT_FILE
 ```
 
+A more general way of doing the above (which doesn't rely on you knowing the
+number of lines in experiment.txt)
+run_experiment -b slurm_arrayjob.sh -e experiment.txt
 
 
 ## Answers
@@ -175,7 +178,8 @@ run_experiment -b slurm_arrayjob.sh -e experiments.txt
     * Well, it's contained both on the scratch disk of the node, and on the
     DFS. The last part of `slurm_arrayjob.sh` moves the data back to the DFS.
 1. how does the script run different lines of experiment.txt?
-    * It uses the slurm environment variable ${SLURM_ARRAY_TASK_ID} - if you
+    * The script takes one argument as input - the path to the experiment file.
+    It uses the slurm environment variable ${SLURM_ARRAY_TASK_ID} - if you
     run the command `sbatch --array=3-14 ...`, the jobs will receive numbers
     3 to 14 inclusive. That number is stored in ${SLURM_ARRAY_TASK_ID} and
     accessible within each job. The script simply picks line number
