@@ -56,23 +56,36 @@ results. Try running the file will different options to see how it works:
 # edit this if you cloned the repo elsewhere
 repo_dir=/home/$USER/git/cluster-scripts
 cd $repo_dir/experiments/examples/simple
-# Running without any options should show the 'help'
-python3 train.py
+
+# Print the man page
+python3 train.py -h
+
 # Try setting some of the options
 python3 train.py -i data/input -o data/output
+ls data/output
+cat data/output/*
+
+# Try running another experiment!
+python3 train.py -i data/input -o data/output --lr 0.001
+ls data/output
+cat data/output/*
+
+# Which learning rate was more accurate?!
 ```
 
 ### 2. Create experiment.txt - the commands to run
-We have made a script which will generate this file for you. This is a good
-idea for you to do in general because it's:
-1. much quicker that copy pasting and editing
-1. much *safer* that that too (it's reproducible!)
-1. easy to make another one with slightly different settings
+So, we want to make a file which list all the experiments you want to run, like
+you were doing manually in step 1, but you want to do 1000s. We have made a
+script which will generate this file for you. Generating your experiments.txt
+file is a good idea for you to do in general because it's:
+1. much quicker than manually writing, copy pasting, and editing
+1. much *safer* (it's reproducible!)
+1. easy to make another file with slightly different settings
 
 In your terminal, change the directory to here, and run the script to make
 the experiment file. Have a look at the file!
 ```
-cd $repo_dir/examples/simple
+cd $repo_dir/experiments/examples/simple
 python3 gen_experiment.py
 head experiment.txt
 ```
