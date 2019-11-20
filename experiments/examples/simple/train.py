@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 """A dummy script for 'training' a model with specified arguments"""
 import argparse
+import os
 import random
 from glob import glob
 
@@ -26,11 +27,14 @@ def main(args):
     lr = args.lr
     wd = args.weight_decay
     print(f'Reading data from {inpath}')
-    for path in glob('{inpath}/*'):
+    for path in glob(f'{inpath}/*'):
         print(f'Nommed: {path}')
     print(f"I'm gonna use a learning rate of {lr} and weight decay of {wd}")
     accuracy = random.random()
     print(f'The model accuracy was {accuracy}...very precision, such learn.')
+    if not os.path.exists(outpath):
+        print(f"{outpath} doesn't exist, creating it for you")
+        os.makedirs(outpath)
     print(f'Writing this important information to {outpath}')
     filename = f'expt_{lr}_{wd}.log'
     with open(f'{outpath}/{filename}', 'w') as fh:
