@@ -72,7 +72,7 @@ src_path=${proj_home}/experiments/examples/simple/data/input
 
 # input data directory path on the scratch disk of the node
 dest_path=${SCRATCH_HOME}/simple/data/input
-mkdir -p ${target_dir}  # make it if required
+mkdir -p ${dest_path}  # make it if required
 
 # Important note about the options here:
 # * --compress is going to compress the data into *a single file* before
