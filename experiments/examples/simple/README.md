@@ -50,7 +50,11 @@ $ srun --partition=PGR-Interactive ...
 ```
 
 ### 1. Make a python script to run an experiment `train.py`
-We've made one for you! This will read data, configure the model, and return
+Well actually...
+
+![I LIED](data/input/spurious_data.gif)
+
+we've made one for you! This will read data, configure the model, and return
 results. Try running the file will different options to see how it works:
 ```
 # edit this if you cloned the repo elsewhere
@@ -99,22 +103,41 @@ You should be able to answer the following:
 
 
 ### 3. Create the slurm_arrayjob.sh - the bash script for the slurm arrayjob
-Well actually...
+So we could simply *run* experiments.txt (e.g. `bash experiments.txt`), and it
+will run each experiment in sequence, one after the other... but that would be
+very slow!
 
-![I LIED](data/input/spurious_data.gif)
+We're going to use slurm to schedule these experiments to run in parallel. This
+way, the whole lot could take as little time as running just one.
 
-...Because we've made one for you. Do have a look though; you should be able to
-answer the following questions (answers at the bottom of the README, no
-cheating!):
+The slurm command for sending jobs to the cluster's nodes is
+[`sbatch`](https://slurm.schedmd.com/sbatch.html). At the most basic level, it
+just takes a bash script from you and executes that same script on every node
+it is sent to. We are going to use it in 'array mode'.
+
+We need to make a bash script which:
+1. configures any slurm options we want to use
+1. moves data from the DFS to the node we're on to the scratch space of the
+   node we are allocated
+1. runs one of the lines in experiments.txt
+
+You're in luck, because we have made you just such a script! Have a look at
+[`slurm_arrayjob.sh`](./slurm_arrayjob.sh) and answer the following questions
+(answers at the bottom of the README, no cheating!):
 1. where is the data located on the distributed filesystem?
 1. where does the python script read the data from?
 1. how did the data get there?
 1. does the data get moved every time?
 1. why are these different places?
 1. where is the output data?
+1. how does the script run different lines of experiment.txt?
 
 
-Run your gridsearch
+### 4. Run your experiment!
+Finally, it's time to see it in action. To set off all the jobs, run:
+```
+run_experiment -b slurm_arrayjob.sh -e experiments.txt
+```
 
 
 
@@ -151,3 +174,9 @@ Run your gridsearch
 1. where is the output data?
     * Well, it's contained both on the scratch disk of the node, and on the
     DFS. The last part of `slurm_arrayjob.sh` moves the data back to the DFS.
+1. how does the script run different lines of experiment.txt?
+    * It uses the slurm environment variable ${SLURM_ARRAY_TASK_ID} - if you
+    run the command `sbatch --array=3-14 ...`, the jobs will receive numbers
+    3 to 14 inclusive. That number is stored in ${SLURM_ARRAY_TASK_ID} and
+    accessible within each job. The script simply picks line number
+    ${SLURM_ARRAY_TASK_ID} from the file experiments.txt and runs it.
