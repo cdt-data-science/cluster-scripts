@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """A dummy script for 'training' a model with specified arguments"""
 import argparse
 import os
