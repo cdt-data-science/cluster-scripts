@@ -5,20 +5,16 @@
 #       partition. If too long, try interactive partition again and warn of
 #       wait.
 
-# TODO: decide what to do with welcome message!
-
 # TODO: make a _gpu and non version
 
-default_args="--partition=Interactive --time=08:00:00 --mem=14000 --cpus-per-task=4 --gres=gpu:1"
+default_args="--time=08:00:00 --mem=14000 --cpus-per-task=4 --gres=gpu:1"
 read -r -d '' default_msg << EOM
-======================= WELCOME MESSAGE =======================
-It's good practice to set a few parameters when using srun
-(this command is essentailly an alias for 'srun --pty bash').
-We have added some default parameters to maximise your chance
-of getting an interactive session. See the Slurm Documentation
-for further info.
-
-https://slurm.schedmd.com/
+=============================== WELCOME MESSAGE ===============================
+It's good practice to set a few parameters when using srun (this command is
+essentailly an alias for 'srun --pty bash'). We have added some default
+parameters to maximise your chance of getting an interactive session. See the
+Slurm Documentation for further info:
+    https://slurm.schedmd.com/
 
 Default args added:
 [$default_args]
@@ -30,51 +26,91 @@ Useful arg examples:
                          and 30 seconds
 * --gres=gpu:1           give me 1 gpu
 * --nodelist=charles19   put me on a specific node
-* --mem=4000             give me 4G of RAM, there's about 50G
-                         per box but memory is not shared 
-                         (note this is not GPU memory)
-* --cpus-per-task=1      give me 1 cpu, there's 32 on most
-                         nodes
-* --partition=...        there is a partition explicitly for
-                         interactive jobs (called Interactive).
+* --mem=4000             give me 4G of RAM (note this is not GPU memory)
+* --cpus-per-task=1      give me 1 cpu
+* --partition=...        there is a likely a partition explicitly for
+                         interactive jobs (called *-Interactive).
                          You are welcome to run interactive
                          jobs on other partitions if the
                          Interactive partition is full. To
-                         get the full list, run "sinfo"
+                         get the full list of partitions, run "sinfo"
 
-For more informtion about node configuration, see the
-computing support docs:
-http://computing.help.inf.ed.ac.uk/james-and-charles-cluster
+For more informtion about node configuration, see the computing support docs:
+    http://computing.help.inf.ed.ac.uk/james-and-charles-cluster
 
-
-When you run this command with args, this message will
-disappear, and no additional args will be added.
 ===============================================================
 EOM
 
 print_usage () {
   cat << EOM
-Usage: $0 [other args for srun] 
+Usage: $0 [-h] [other args for srun] 
 
 Arguments:
-    see documentation for srun. You can specify all arguments, and they'll
-    be used.
+    -h
+        Print a friendly starter for 10
+    -p PARTITION
+        The partition to use
+    -m WAIT_TIME
+        max time to wait before trying default partition. Default 10 seconds.
+    [other args for srun]
+        see documentation for srun:
+            https://slurm.schedmd.com/srun.html
+        You can specify arguments to this command exactly as you would for
+        srun. If you specify any arguments, no defaults arguments will be used.
 EOM
 }
 
+max_wait=0.1
+while getopts 'hm:p:' flag; do
+  case "${flag}" in
+    m) max_wait="${OPTARG}" ;;
+    h) print_usage
+       exit 1 ;;
+  esac
+done
+shift $((OPTIND-1))
+
 if [ $# -eq 0 ]; then
-    echo "$default_msg"
-    args=$default_args
+  args=$default_args
+  interactive_partitions=`sinfo -o %R -h | grep -i interactive`
+  if [ -z "$interactive_partitions" ]; then
+    echo "No partitions found with 'interactive' in their name"
+    echo "Attempting to get a session on the default partition"
+  fi
 else
-    args=$@
+  # If the user supplies args, no defaults set
+  args=$@
 fi
 
-echo
-echo "Doing a --test-only to estimate wait time..."
-srun $args --test-only --pty bash
-echo
+if [ -z "$interactive_partitions" ]; then
+  echo
+  echo "Doing a --test-only to estimate wait time..."
+  srun_test_out=$(srun $args --test-only --pty bash  2>&1 | tee /dev/tty)
+  echo
+  echo "Running the following command to get you an interactive session:"
+  echo "srun $args --pty bash"
+  echo "..."
+  srun $args --pty bash
+else
+  for partition in $interactive_partitions"; do
+    partition="${interactive_partitions[$ii]}"
+    args="--partition=${partition} $args"
+    echo
+    echo "Doing a --test-only to estimate wait time..."
+    srun_test_out=$(srun $args --test-only --pty bash  2>&1 | tee /dev/tty)
+    echo
+    ## Not reliable to use the datetime in the end - reported datetime doesn't
+    ## match that reported by date '+%Y-%m-%dT%H:%M:%S'. Using 
+    # srun_dt=$(echo $srun_test_out | \
+    #           grep -Eo '[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}')  
 
-echo "Running the following command to get you an interactive session:"
-echo "srun $args --pty bash"
-echo "..."
-srun $args --pty bash
+    echo "Running the following command to get you an interactive session:"
+    echo "srun $args --pty bash"
+    echo "..."
+    srun $args --pty bash
+  done
+  
+fi
+
+
+
