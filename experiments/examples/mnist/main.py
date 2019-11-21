@@ -109,7 +109,7 @@ def construct_parser():
 
 def main(args):
     config_args = [str(vv) for kk, vv in vars(args).items()
-                   if kk not in ['input', 'output']]
+                   if kk in ['batch_size', 'lr', 'gamma', 'seed']]
     model_name = '_'.join(config_args)
     use_cuda = not args.no_cuda and torch.cuda.is_available()
     if not args.no_cuda and not use_cuda:
