@@ -110,6 +110,7 @@ def construct_parser():
  
 
 def main(args):
+    
     use_cuda = not args.no_cuda and torch.cuda.is_available()
     if not args.no_cuda and not use_cuda:
         raise ValueError('You wanted to use cuda but it is not available. '
@@ -117,9 +118,17 @@ def main(args):
                          'not want to use cuda, pass the --no-cuda flag.')
     device = torch.device("cuda" if use_cuda else "cpu")
     
+    
+    # For reproducibility:
+    #     c.f. https://pytorch.org/docs/stable/notes/randomness.html
     if args.seed is None:
         args.seed = torch.randint(0, 2**32)
     torch.manual_seed(args.seed)
+    if 'cuda' in device:
+        os.environ["CUDA_VISIBLE_DEVICES"] = device
+        torch.cuda.manual_seed_all(args.seed)
+        torch.backends.cudnn.deterministic = True
+        torch.backends.cudnn.benchmark = False
     
     config_args = [str(vv) for kk, vv in vars(args).items()
                    if kk in ['batch_size', 'lr', 'gamma', 'seed']]
