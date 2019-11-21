@@ -108,7 +108,11 @@ def main():
     model_name = '_'.join([str(vv) for vv in vars(args).values()])
     
     use_cuda = not args.no_cuda and torch.cuda.is_available()
-
+    if not args.no_cuda and not use_cuda:
+        raise ValueError('You wanted to use cuda but it is not available. '
+                         'Check nvidia-smi and your configuration. If you do '
+                         'not want to use cuda, pass the --no-cuda flag.')
+    
     torch.manual_seed(args.seed)
 
     device = torch.device("cuda" if use_cuda else "cpu")
