@@ -144,13 +144,13 @@ def main(args):
     optimizer = optim.Adadelta(model.parameters(), lr=args.lr)
     
     log_fh = open(f'{args.output}/{model_name}.log', 'w')
-    print('trn_loss,trn_acc,vld_loss,vld_acc', file=log_fh)
+    print('epoch,trn_loss,trn_acc,vld_loss,vld_acc', file=log_fh)
     scheduler = StepLR(optimizer, step_size=1, gamma=args.gamma)
     best_loss = sys.float_info.max
     for epoch in range(1, args.epochs + 1):
         loss, acc = train(args, model, device, train_loader, optimizer, epoch)
         vld_loss, vld_acc = test(args, model, device, test_loader)
-        print(f'{loss},{acc},{vld_loss},{vld_acc}', file=log_fh)
+        print(f'{epoch},{loss},{acc},{vld_loss},{vld_acc}', file=log_fh)
         scheduler.step()
         if vld_loss < best_loss:
             best_loss = vld_loss
