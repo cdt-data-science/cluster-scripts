@@ -47,10 +47,10 @@ vim ${code_dir}/slurm_arrayjob.sh
 3. create an experiment file; each line contains a command to execute which
    will run one of your experiments:
 ```
-python ${code_dir}/gen_experiments.py
+python ${code_dir}/gen_experiment.py
 ls ${code_dir}
 >    ...
->    experiments.txt
+>    experiment.txt
 >    ...
 cat experiment.txt 
 > python3 train.py -i /data/input -o /data/output --lr 1e-06 --weight_decay 1e-06
@@ -62,7 +62,7 @@ cat experiment.txt
 4. run your experiment! e.g.
 ```
 run_experiment -b ${code_dir}/slurm_arrayjob.sh \
-    -e ${code_dir}/experiments.txt \
+    -e ${code_dir}/experiment.txt \
     -m 12 --cpus-per-task=4 --gres=gpu:1 --mem=8000
 ```
 
