@@ -125,9 +125,14 @@ def main(args):
         args.seed = torch.randint(0, 2**32)
     torch.manual_seed(args.seed)
     if use_cuda:
-        os.environ["CUDA_VISIBLE_DEVICES"] = device
+        if device.index:
+            device_str = f"{device.type}:{device.index}"
+        else:
+            device_str = f"{device.type}"
+        os.environ["CUDA_VISIBLE_DEVICES"] = device_str
         torch.cuda.manual_seed_all(args.seed)
         torch.backends.cudnn.deterministic = True
+        # This does make things slower :(
         torch.backends.cudnn.benchmark = False
     
     config_args = [str(vv) for kk, vv in vars(args).items()
