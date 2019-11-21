@@ -26,6 +26,14 @@ chmod u+x {cluster-status,down-gpus,free-gpus,gpu-usage,gpu-usage-by-node,whoson
 ```
 
 You should now be able to run the scripts from anywhere when on the cluster.
+To check that this has worked, go somewhere else, then try some commands. For
+example:
+```
+cd ~
+gpu-usage -p
+> in_use  usable  total  free
+> 69      71      71     2
+```
 
 If you want to have job ID autocompletion for `scancel`, you need to source the `job-id-completion.sh` script:
 
