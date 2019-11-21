@@ -117,14 +117,14 @@ def main(args):
                          'Check nvidia-smi and your configuration. If you do '
                          'not want to use cuda, pass the --no-cuda flag.')
     device = torch.device("cuda" if use_cuda else "cpu")
-    
+    print(f'Using device: {torch.cuda.get_device_name()}')
     
     # For reproducibility:
     #     c.f. https://pytorch.org/docs/stable/notes/randomness.html
     if args.seed is None:
         args.seed = torch.randint(0, 2**32)
     torch.manual_seed(args.seed)
-    if 'cuda' in device:
+    if use_cuda:
         os.environ["CUDA_VISIBLE_DEVICES"] = device
         torch.cuda.manual_seed_all(args.seed)
         torch.backends.cudnn.deterministic = True
