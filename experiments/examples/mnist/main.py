@@ -1,4 +1,3 @@
-from __future__ import print_function
 import argparse
 import torch
 import torch.nn as nn
@@ -86,10 +85,16 @@ def main():
                         help='random seed (default: 1)')
     parser.add_argument('--log-interval', type=int, default=10, metavar='N',
                         help='how many batches to wait before logging training status')
-
-    parser.add_argument('--save-model', action='store_true', default=False,
-                        help='For Saving the current Model')
+    
+    parser.add_argument('-i', '--input', required=True, help='Path to the '
+                        'input data for the model to read')
+    parser.add_argument('-o', '--output', required=True, help='Path to the '
+                        'directory to write output to')
+    
     args = parser.parse_args()
+    
+    model_name = '_'.join([str(vv) for vv in vars(args).values()])
+    
     use_cuda = not args.no_cuda and torch.cuda.is_available()
 
     torch.manual_seed(args.seed)
@@ -98,14 +103,14 @@ def main():
 
     kwargs = {'num_workers': 1, 'pin_memory': True} if use_cuda else {}
     train_loader = torch.utils.data.DataLoader(
-        datasets.MNIST('../data', train=True, download=True,
+        datasets.MNIST(args.input, train=True, download=True,
                        transform=transforms.Compose([
                            transforms.ToTensor(),
                            transforms.Normalize((0.1307,), (0.3081,))
                        ])),
         batch_size=args.batch_size, shuffle=True, **kwargs)
     test_loader = torch.utils.data.DataLoader(
-        datasets.MNIST('../data', train=False, transform=transforms.Compose([
+        datasets.MNIST(args.input, train=False, transform=transforms.Compose([
                            transforms.ToTensor(),
                            transforms.Normalize((0.1307,), (0.3081,))
                        ])),
@@ -121,8 +126,7 @@ def main():
         scheduler.step()
 
     if args.save_model:
-        torch.save(model.state_dict(), "mnist_cnn.pt")
-
+        torch.save(model.state_dict(), f"{args.output}/{model_name}.pt")
 
 if __name__ == '__main__':
     main()
