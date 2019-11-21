@@ -1,3 +1,4 @@
+import os
 import argparse
 import torch
 import torch.nn as nn
@@ -114,6 +115,10 @@ def main(args):
         raise ValueError('You wanted to use cuda but it is not available. '
                          'Check nvidia-smi and your configuration. If you do '
                          'not want to use cuda, pass the --no-cuda flag.')
+    
+    if not os.path.exists(args.output):
+        print(f'{args.output} does not exist, creating...')
+        os.makedirs(args.output)
     
     torch.manual_seed(args.seed)
 
