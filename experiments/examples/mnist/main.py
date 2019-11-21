@@ -110,7 +110,7 @@ def construct_parser():
  
 
 def main(args):
-    
+    #TODO: add checkpointing
     use_cuda = not args.no_cuda and torch.cuda.is_available()
     if not args.no_cuda and not use_cuda:
         raise ValueError('You wanted to use cuda but it is not available. '
