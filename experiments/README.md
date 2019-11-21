@@ -162,6 +162,7 @@ squeue -u ${USER}
 ```
 you can kill all your jobs using `scancel 666105`. If you were running
 individual jobs (not in an array), they would all have different JOBIDs.
+
 3. easy logging - for the same reason as above, i.e. the JOBIDs have the same
 base for all jobs in the array, it's easy to check the logs for a whole suite
 of experiments

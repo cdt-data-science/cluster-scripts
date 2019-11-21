@@ -40,8 +40,8 @@ interactive_gpu
 ```
 
 ### 0.1. Initial bash setup
-1. First, set up your environment on the cluster. Follow the bash environment
-setup instructions here http://bit.ly/37p2BLZ.
+1. First, set up your environment on the cluster. Follow the section entitled
+"Quick Bash Environment Setup" here: http://bit.ly/37p2BLZ
 1. If you haven't already, clone this repository, following the
 [base README.md](../../../README.md) installation instructions to make all the
 executables available, such as `interactive_gpu`
@@ -49,9 +49,9 @@ executables available, such as `interactive_gpu`
 [slurm experiments README](../../README.md) in the base directory for slurm
 experiments
 1. **IMPORTANT** Create a folder for your log files. For this example we are
-using /home/${USER}/slurm_logs, if you want to change that in future, make sure
-you change the lines `#SBATCH --output ...` and `#SBATCH --error ...` - if the
-directories do not exist **`sbatch` will silently fail!**
+using `/home/${USER}/slurm_logs`. If you want to change that in future, make
+sure you change the lines `#SBATCH --output ...` and `#SBATCH --error ...` - if
+the directories do not exist **`sbatch` will silently fail!**
 ```
 mkdir /home/${USER}/slurm_logs
 ```
@@ -113,12 +113,12 @@ the data is available on the informatics network, you can use
 
 
 ## 1. Test and understand `main.py`
-The python script `main.py` runs an mnist experiment. First of all, read the
-code and spend 5 minutes or so trying to understand what it does:
-[`./main.py](main.py). There's no need to be too thorough, we're going to walk
+The python script [`./main.py`](main.py) runs an mnist experiment. First oF
+all, read the code and spend 5 minutes or so trying to understand what it does:
+[`./main.py`](main.py). There's no need to be too thorough, we're going to walk
 through the basics below.
 
-### Get a GPU
+### Log on to a node with a GPU
 Get yourself an interactive session with a gpu and try out `main.py` by
 following these commands:
 ```

@@ -20,7 +20,8 @@
   * `sinline` - quickly run commands on specified node(s) inline and print
   output to terminal (as opposed to a log file)
 2. Templates and a framework for running experiments:
-  * [experiments] - template + executable, and README explanation of framework
+  * [experiments](experiments) - template + executable, and README explanation
+  of framework
   * [simple example](./experiments/examples/simple) - a mock gridsearch
   requiring *no dependencies*, a **very** quick and practical introduction to
   the framework
