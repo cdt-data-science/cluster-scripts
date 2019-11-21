@@ -99,11 +99,19 @@ The command which selects the node to run your code on is called
 [`sbatch`](https://slurm.schedmd.com/sbatch.html). It takes a bash script as
 input and runs that on the node selected.
 
+### srun
+[`srun`](https://slurm.schedmd.com/srun.html) is essentially the same as
+`sbatch` except that it is interactive i.e. when you run it, it is the only
+process you are running in the foreground. Conversely, when you run `sbatch`,
+it schedules your job, and runs it in the background, so you can get on with 
+other things. `srun` is useful for small scripts, and to get you an interactive
+bash session with `srun --pty bash`.
+
 #### Underlying distributed filesystem
-The `/home` filesystem on each node is identical - it is part of a distributed
-filesytem (DFS). This is the same filesystem as the 'headnode'. The 'headnode'
-is the node you arrived at when you logged in to the cluster, and likely where
-you executed the `sbatch` command from.
+The `/home` directory on each node is identical - it is part of the same
+distributed filesytem (DFS). This is the same on the 'headnode' too. The
+'headnode' is the node you arrived at when you logged in to the cluster, and
+likely where you executed the `sbatch` command from.
 
 **THE DISTRIBUTED FILESYSTEM IS SLOW** - it should be used for storing your
 code. Each node has its own **scratch** directory, which is a seperate storage
@@ -122,32 +130,38 @@ parallel**. We call these
 [array jobs](https://slurm.schedmd.com/job_array.html). If you run your sbatch
 command in array mode, you can use the environment variable 
 `${SLURM_ARRAY_TASK_ID}`, the id number of the specific job number in the
-array, to call out to another file, select a line, and run it. There are
-benefits to running your experiments like this:
+array, to call out to another file, select a line, and run it. 
+
+### Why Arrays
+There are benefits to running your experiments like this:
 1. You can change the maximum number of parallel jobs running at any given time
    after the job has started e.g. the command 
    `scontrol update ArrayTaskThrottle=36 JobId=450263` changes the number of
    parallel jobs of array job 450263 to 36
-2. control - you can easily stop, pause, or restart a whole group of jobs
-3. reproducibility - you necessarily have a file containing exactly what
+2. control - you can easily stop, pause, or restart a whole group of jobs. Most
+importantly, you can easily kill the whole lot by referencing the single JOBID.
+For example, if:
+```
+squeue -u ${USER}
+>              JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+> 666105_[11-35%10] Teach-Sta slurm_ar s0816700 PD       0:00      1 (JobArrayTaskLimit)
+>           666105_1 Teach-Sta slurm_ar s0816700  R       0:04      1 landonia19
+>           666105_2 Teach-Sta slurm_ar s0816700  R       0:04      1 landonia19
+>           666105_3 Teach-Sta slurm_ar s0816700  R       0:04      1 landonia19
+>           666105_4 Teach-Sta slurm_ar s0816700  R       0:04      1 landonia19
+>           666105_5 Teach-Sta slurm_ar s0816700  R       0:04      1 landonia20
+>           666105_6 Teach-Sta slurm_ar s0816700  R       0:04      1 landonia20
+>           666105_7 Teach-Sta slurm_ar s0816700  R       0:04      1 landonia20
+>           666105_8 Teach-Sta slurm_ar s0816700  R       0:04      1 landonia20
+>           666105_9 Teach-Sta slurm_ar s0816700  R       0:04      1 landonia22
+>          666105_10 Teach-Sta slurm_ar s0816700  R       0:04      1 landonia22
+```
+you can kill all your jobs using `scancel 666105`. If you were running
+individual jobs (not in an array), they would all have different JOBIDs.
+3. easy logging - for the same reason as above, i.e. the JOBIDs have the same
+base for all jobs in the array, it's easy to check the logs for a whole suite
+of experiments
+4. reproducibility - you necessarily have a file containing exactly what
    commands you ran. If you use a version control system (you...are right?!)
    then you can easily commit these with the codebase at a given timepoint and
    return there any time you like
-
-## Tips
-Firstly make sure that you add all the scripts in the the home directory of
-this repository to your `$PATH`. Follow the installation instructions in the
-[README](../README.md) and quickly skim the documentation there to see what
-they do. They're very useful for observing the status of the cluster, your
-jobs, and performing tricky operations.
-
-### Observing (hopefully) running jobs
-To see all your running jobs run `squeue -u $USER` or `myjobs`
-
-### Testing
-
-### Moving data
-
-
-## FAQ & Gotchas
-
