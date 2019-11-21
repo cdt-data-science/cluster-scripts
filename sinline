@@ -74,7 +74,6 @@ echo '#SBATCH -o sbatch_stdout.log' >> /tmp/bash_script.sh
 echo '#SBATCH -e sbatch_stderr.log' >> /tmp/bash_script.sh  
 echo "${cmd}" >> /tmp/bash_script.sh
 
-# TODO: would it have been easier to use --wrap?
 sbatch --wait ${sbatch_args} -w ${node} /tmp/bash_script.sh
 wait
 
