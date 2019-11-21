@@ -52,7 +52,13 @@ ls ${code_dir}
 >    ...
 >    experiments.txt
 >    ...
+cat experiment.txt 
+> python3 train.py -i /data/input -o /data/output --lr 1e-06 --weight_decay 1e-06
+> python3 train.py -i /data/input -o /data/output --lr 1e-06 --weight_decay 1e-05
+> python3 train.py -i /data/input -o /data/output --lr 1e-06 --weight_decay 0.0001
+> ...
 ```
+
 4. run your experiment! e.g.
 ```
 run_experiment -b ${code_dir}/slurm_arrayjob.sh \
@@ -84,8 +90,8 @@ http://computing.help.inf.ed.ac.uk/cluster-computing
 
 Slurm is used where you have a 'cluster' of machines but you, the user, don't
 want to worry about which machine to run your code on. Each 'node' in the
-cluster (or at least 'partition' of the cluster) should be more or less
-identical such that the user can just request that a bunch of commands
+cluster (or at least 'partition' of the cluster'sa nodes) should be more or
+less identical such that the user can just request that a bunch of commands
 is executed and slurm handles the distribution of work.
 
 ### sbatch
