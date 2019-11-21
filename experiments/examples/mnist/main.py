@@ -1,6 +1,5 @@
 import sys
 import os
-import random
 import argparse
 import torch
 import torch.nn as nn
