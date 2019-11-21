@@ -96,8 +96,9 @@ def construct_parser():
                         help='Learning rate step gamma (default: 0.7)')
     parser.add_argument('--no-cuda', action='store_true', default=False,
                         help='disables CUDA training')
-    parser.add_argument('--seed', type=int, default=torch.seed(), metavar='S',
-                        help='random seed (default: torch.seed())')
+    parser.add_argument('--seed', type=int, default=int(torch.seed()),
+                        metavar='S', help='random seed (default: '
+                        'int(torch.seed()) )')
     parser.add_argument('--log-interval', type=int, default=10, metavar='N',
                         help='how many batches to wait before logging '
                         'training status')
