@@ -171,14 +171,127 @@ perform the setup that we did manually above (e.g. activate conda, and move
 data), plus pluck lines from our experiment file and run them.
 
 
-## 2. Create `experiment.txt` - the commands to run
+## 2. Create the `mnist_arrayjob.sh` - the bash script for the slurm arrayjob
+We need to make a bash script to pass to `sbatch` which will essentially do
+exactly what we did above interactively:
+* Activate the conda enviroment
+* Create our scratch input data directory (if required)
+* Move data from DFS to scratch (if required)
+* Select the experiment command
+* Run the experiment
+* Copy output data back to DFS
+
+We have made [`mnist_arrayjob.sh`](mnist_arrayjob.sh) for you! Do take a look
+at it, and make sure you understand how it is slecting lines from
+`experiment.txt`.
 
 
-## 3. Create the `mnist_arrayjob.sh` - the bash script for the slurm arrayjob
+## 3. Create `experiment.txt` - the commands to run
+Again, we've given you a helping hand here and given you a script to generate
+`experiment.txt`. Have a look at gen_experiment.py](gen_experiment.py) in your
+browser or `cat gen_experiment.py` in your terminal.
 
+In your terminal, change the directory to here, and run the script to make
+the experiment file. Have a look at the file!
+```
+cd $repo_home/experiments/examples/mnist
+python gen_experiment.py
+head experiment.txt
+wc experiment.txt
+```
 
 ## 4. Run your experiment!
+We're ready to run it. If everything was left as it, we're going to run 60
+experiments, capping it at 10 experiments at a time.
+
+You can do it the long way...
+```
+EXPT_FILE=experiments.txt
+NR_EXPTS=`cat ${EXPT_FILE} | wc -l`
+MAX_PARALLEL_JOBS=10
+sbatch --array=1-${NR_EXPTS}%${MAX_PARALLEL_JOBS} mnist_arrayjob.sh $EXPT_FILE
+```
+
+...or the short way we've made for you!
+```
+run_experiment -b mnist_arrayjob.sh -e experiment.txt
+```
+
+To observe your jobs running, you can execute:
+```
+myjobs  # shorthand for squeue -u ${USER}
+# or if you want to see it in real time
+watch myjobs  # hit ctrl-c to exit
+```
+
+We set a location for our logs this time, so go there and have a look:
+```
+ls ~/slurm_logs
+cat ~/slurm_logs/slurm-*
+```
+
+To watch a log as it progresses, you can use tail -f to "follow":
+```
+tail -f ~/slurm_logs/slurm-665999_1.out 
+```
+
+Bear in mind that, by default, to save on network traffic, slurm will only
+write back to the log in chunks. You can bypass this in your scripts by forcing
+the stdout to 'flush'.
 
 
 ## 5. Checkpointing
+But what happens if an experiment fails? A node on the cluster can fail at any
+time...and they do with regularity :upside_down_face:. We need to write our
+code such that:
+* a job could fail at any time and it doesn't matter - we can pick up where we
+left off
+* we can keep our jobs on the cluster **short**
 
+If you execute `sinfo` in your terminal, you'll see that there are likely time
+limits on how long your job should run:
+```
+$ sinfo -o '%R;%N;%l' | column -s';' -t
+PARTITION          NODELIST                           TIMELIMIT
+Teach-Interactive  landonia[01,03,25]                 2:00:00
+Teach-Standard     landonia[04-10,12-17,19-20,22-24]  8:00:00
+Teach-Short        landonia[02,18]                    4:00:00
+Teach-LongJobs     landonia[11,21]                    3-08:00:00
+General_Usage      letha[01-06]                       3-08:00:00
+PGR-Interactive    damnii01                           2:00:00
+PGR-Standard       damnii[02-12]                      7-00:00:00
+```
+
+Even if there isn't a limit, it is much more curteous to other users for your
+jobs to take no more than 8 hours. It's not a very good situation to have one
+person take over the nodes with jobs lasting a month each.
+
+To implement checkpointing you need to:
+1. edit [./main.py](main.py):
+    1. Make a new argument which is the path to a *.pt file, if it's not
+    specified then don't load a model
+    1. With that argument, try to load a model at the beginning of the script.
+    It's useful to allow the path not to exist; if it doesn't exist, don't load
+    a model from the checkpoint.
+    1. https://pytorch.org/tutorials/beginner/saving_loading_models.html this
+    might be useful
+    1. this is going to mess up your logging unless you additionally read the 
+    log file associated with the checkpoint file. Luckily they have (nearly)
+    the same name, so you should be able to do this. Read the epoch number from
+    the log file if loading a checkpoint, and begin at the next epoch and
+    continue --epoch number of epochs
+1. edit [./gen_experiment.py](gen_experiment.py)
+    1. add this new argument to the experiment.txt generation file. You should
+    try and load a checkpoint if it exists by default.
+    1. Be careful about paths: where do we want to load the checkpoint from?
+1. Is there anything you would need to change in
+[mnist_arrayjob.sh](mnist_arrayjob.sh)?
+
+
+## 6. Extension challenges
+You've got all your ouptut, now you want to analyse it. See if you can write
+code to do the following:
+1. Find the best model
+1. Plot the train and test curves for every model fitted
+1. Implement early stopping in your models - you don't want to keep triaing if
+your validation loss is not improving
