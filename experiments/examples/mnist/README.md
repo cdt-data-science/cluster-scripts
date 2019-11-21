@@ -239,6 +239,13 @@ Bear in mind that, by default, to save on network traffic, slurm will only
 write back to the log in chunks. You can bypass this in your scripts by forcing
 the stdout to 'flush'.
 
+Eventually, you should start seeing your results sent back to the DFS e.g.:
+```
+ls data/output
+> 64_10.0_0.4_1547420631.best.pt	 64_10.0_0.6_438938989.log	  64_10.0_0.8_1871285932.final.pt  64_1.0_0.5_2668691076.best.pt
+> 64_10.0_0.4_1547420631.final.pt  64_10.0_0.6_679712202.best.pt	  64_10.0_0.8_1871285932.log	   64_1.0_0.5_2668691076.final.pt
+> 64_10.0_0.4_1547420631.log	 64_10.0_0.6_679712202.final.pt   64_10.0_0.8_818634812.best.pt    64_1.0_0.5_2668691076.log
+```
 
 ## 5. Checkpointing
 But what happens if an experiment fails? A node on the cluster can fail at any
@@ -292,6 +299,7 @@ To implement checkpointing you need to:
 You've got all your ouptut, now you want to analyse it. See if you can write
 code to do the following:
 1. Find the best model
+1. Find the worst model!
 1. Plot the train and test curves for every model fitted
 1. Implement early stopping in your models - you don't want to keep triaing if
 your validation loss is not improving
