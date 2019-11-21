@@ -122,10 +122,15 @@ def main(args):
     # For reproducibility:
     #     c.f. https://pytorch.org/docs/stable/notes/randomness.html
     if args.seed is None:
-        args.seed = torch.randint(0, 2**32)
+        args.seed = torch.randint(0, 2**32, (1, )).item()
+        print(f'You did not set --seed, {args.seed} was chosen')
     torch.manual_seed(args.seed)
     if use_cuda:
-        os.environ["CUDA_VISIBLE_DEVICES"] = device
+        if device.index:
+            device_str = f"{device.type}:{device.index}"
+        else:
+            device_str = f"{device.type}"
+        os.environ["CUDA_VISIBLE_DEVICES"] = device_str
         torch.cuda.manual_seed_all(args.seed)
         torch.backends.cudnn.deterministic = True
         torch.backends.cudnn.benchmark = False
