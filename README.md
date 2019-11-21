@@ -16,7 +16,7 @@ cd ~
 mkdir git
 cd git
 git clone https://github.com/cdt-data-science/cluster-scripts.git
-echo "export PATH=/home/$USER/git/cluster-scripts:\$PATH" >> ~/.bashrc
+echo 'export PATH=/home/$USER/git/cluster-scripts:$PATH' >> ~/.bashrc
 source ~/.bashrc
 ```
 
