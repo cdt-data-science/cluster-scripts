@@ -19,8 +19,7 @@ Firstly, if you haven't already, clone this repository, following the
 [base README.md](../../../README.md) installation instructions.
 
 Next, make sure you have made `run_experiment` available by running the
-setup instructions in the [slurm experiments README](../../README.md) in 
-the base directory for slurm experiments.
+setup instructions in the [slurm experiments README](../../README.md).
 
 **IMPORTANT NOTE:** Running processes locally i.e. here on the headnode (the
 node you arrive at when you ssh to a given cluster) is **VERY BAD**! The
