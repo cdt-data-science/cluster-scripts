@@ -1,5 +1,6 @@
 import sys
 import os
+import random
 import argparse
 import torch
 import torch.nn as nn
@@ -85,8 +86,9 @@ def construct_parser():
     parser = argparse.ArgumentParser(description='PyTorch MNIST Example')
     parser.add_argument('--batch-size', type=int, default=64, metavar='N',
                         help='input batch size for training (default: 64)')
-    parser.add_argument('--test-batch-size', type=int, default=1000, metavar='N',
-                        help='input batch size for testing (default: 1000)')
+    parser.add_argument('--test-batch-size', type=int, default=1000,
+                        metavar='N', help='input batch size for testing '
+                        '(default: 1000)')
     parser.add_argument('--epochs', type=int, default=14, metavar='N',
                         help='number of epochs to train (default: 10)')
     parser.add_argument('--lr', type=float, default=1.0, metavar='LR',
@@ -95,10 +97,11 @@ def construct_parser():
                         help='Learning rate step gamma (default: 0.7)')
     parser.add_argument('--no-cuda', action='store_true', default=False,
                         help='disables CUDA training')
-    parser.add_argument('--seed', type=int, default=1, metavar='S',
-                        help='random seed (default: 1)')
+    parser.add_argument('--seed', type=int, default=torch.seed(), metavar='S',
+                        help='random seed (default: torch.seed())')
     parser.add_argument('--log-interval', type=int, default=10, metavar='N',
-                        help='how many batches to wait before logging training status')
+                        help='how many batches to wait before logging '
+                        'training status')
     
     parser.add_argument('-i', '--input', required=True, help='Path to the '
                         'input data for the model to read')
