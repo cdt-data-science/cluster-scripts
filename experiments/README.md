@@ -22,7 +22,6 @@ You will probably want to make many different experiment files for a single
 project e.g. different grid searches over parameters, investigating
 different models, or running all your baselines.
 
-
 ## Setup
 Add the script(s) in this directory to your path (essentially allows you to run
 `run_experiment` from anywhere):
@@ -33,8 +32,13 @@ source ~/.bashrc
 
 ## Quickstart
 For a fuller explanation of these steps, see below or check out the
-`./examples` directory for fully worked examples. The below explains usage of
-the template:
+[`./examples`](examples) directory for fully worked examples e.g.:
+* [./examples/simple](./examples/simple) - a mock gridsearch requiring
+*no dependencies*, a **very** quick introduction
+* [./examples/mnist](./examples/mnist) - conda + pytorch + GPUs real-life
+gridsearch: can be easiliy edited and used as a basis for your experiments
+
+The below explains usage of the template:
 
 1. follow the setup above
 2. copy `slurm_arrayjob.sh.template` to your project's home directory and
