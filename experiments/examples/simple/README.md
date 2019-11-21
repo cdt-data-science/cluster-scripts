@@ -188,7 +188,7 @@ tail -n +1 data/output/*  # a little trick to print filenames and file contents
 
 You can delete your logs easily using:
 ```
-rm slurm-*.log
+rm slurm-*.out
 ```
 
 
@@ -244,11 +244,12 @@ rm slurm-*.log
     of the node, but the amalgamated outputs are sent back to the DFS. The
     last part of `slurm_arrayjob.sh` moves the data back to the DFS.
 1. what happens to the output data if you do a second run of the experiment?
-    * The scratch disk of each node will now have two files inside. However,
-    when rsync looks at these two files and compares them with the files on the
-    DFS, it will decide to only send the one newer file (as the older file on
-    scratch will either be unchanged on the DFS, or a newer file will already
-    exist on the DFS)
+    * The scratch disk of each node may now have two files inside (it's
+    possible the same experiment will get sent to the same node again, and the
+    output file will simply be overwritten). However, when rsync looks at these
+    two files and compares them with the files on the DFS, it will decide to
+    only send the one newer file (as the older file on scratch will either be
+    unchanged on the DFS, or a newer file will already exist on the DFS)
 1. how does the script run different lines of experiment.txt?
     * The script takes one argument as input - the path to the experiment file.
     It uses the slurm environment variable ${SLURM_ARRAY_TASK_ID} - if you
