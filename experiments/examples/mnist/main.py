@@ -96,9 +96,8 @@ def construct_parser():
                         help='Learning rate step gamma (default: 0.7)')
     parser.add_argument('--no-cuda', action='store_true', default=False,
                         help='disables CUDA training')
-    parser.add_argument('--seed', type=int, default=int(torch.seed()),
-                        metavar='S', help='random seed (default: '
-                        'int(torch.seed()) )')
+    parser.add_argument('--seed', type=int, default=None, metavar='S',
+                        help='random seed (default: random number)')
     parser.add_argument('--log-interval', type=int, default=10, metavar='N',
                         help='how many batches to wait before logging '
                         'training status')
@@ -111,22 +110,24 @@ def construct_parser():
  
 
 def main(args):
-    config_args = [str(vv) for kk, vv in vars(args).items()
-                   if kk in ['batch_size', 'lr', 'gamma', 'seed']]
-    model_name = '_'.join(config_args)
     use_cuda = not args.no_cuda and torch.cuda.is_available()
     if not args.no_cuda and not use_cuda:
         raise ValueError('You wanted to use cuda but it is not available. '
                          'Check nvidia-smi and your configuration. If you do '
                          'not want to use cuda, pass the --no-cuda flag.')
+    device = torch.device("cuda" if use_cuda else "cpu")
+    
+    if args.seed is None:
+        args.seed = torch.randint(0, 2**32)
+    torch.manual_seed(args.seed)
+    
+    config_args = [str(vv) for kk, vv in vars(args).items()
+                   if kk in ['batch_size', 'lr', 'gamma', 'seed']]
+    model_name = '_'.join(config_args)
     
     if not os.path.exists(args.output):
         print(f'{args.output} does not exist, creating...')
         os.makedirs(args.output)
-    
-    torch.manual_seed(args.seed)
-
-    device = torch.device("cuda" if use_cuda else "cpu")
 
     kwargs = {'num_workers': 1, 'pin_memory': True} if use_cuda else {}
     train_loader = torch.utils.data.DataLoader(
