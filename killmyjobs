@@ -38,14 +38,14 @@ else
     echo "killing jobs in queue as well as running jobs"
     jobids="$(squeue -r -u `whoami` -o "%i" --noheader | LC_ALL=C sort)"
 fi
+if [[ -n ${exclude+1} ]]; then
+    echo "excluding ${exclude[@]}"
+    excl=`printf '%s\n' "${exclude[@]}" | LC_ALL=C sort`
+    jobids=`comm -13 <(echo "$excl") <(echo "$jobids") | tr '\n' ' '`
+fi
 if [ "${jobids}" = "" ]; then
     echo "well I would...but you've got no jobs to kill m8"
 else
-    if [[ -n ${exclude+1} ]]; then
-	echo "excluding ${exclude[@]}"
-        excl=`printf '%s\n' "${exclude[@]}" | LC_ALL=C sort`
-        jobids=`comm -13 <(echo "$excl") <(echo "$jobids") | tr '\n' ' '`
-    fi
     echo "killing $jobids"
     parallel 'scancel {}' ::: ${jobids} 
 fi

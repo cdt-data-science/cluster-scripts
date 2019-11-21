@@ -1,45 +1,74 @@
 # Useful scripts for the CDT cluster
 
-A collection of scripts for:
-* getting the status of the cluster: `cluster-status`, `gpu-usage`, `free-gpus`, `down-gpus`, `whoson`
-* information about running jobs: `jobinfo`, `longbois`
-* and aiding your job submission: `interactive`, `killmyjobs`, `onallnodes`
+1. A collection of executable scripts for:
+* getting the status of the cluster:
+  * `cluster-status` - node information
+  * `gpu-usage` - aggregate gpu use information
+  * `gpu-usage-by-node` - gpu use information per node
+  * `free-gpus` - location of free gpus and how many
+  * `down-gpus` - location of gpus which are down, and full information
+  * `whoson` - which users are logged on and running how many jobs
+* information about running jobs:
+  * `myjobs` - prints all your running jobs (`squeue -u ${USER}`)
+  * `jobinfo` - information per user or node about running jobs
+* and aiding your job submission:
+  * `interactive` & `interactive_gpu`- gets you an interactive job on one of
+  nodes with or without a gpu
+  * `killmyjobs` - useful for clearing jobs (has facility to exclude some)
+  * `onallnodes` - run a script on all or a selection of nodes (very useful for
+  regular cleaning jobs etc.)
+  * `sinline` - quickly run commands on specified node(s) inline and print
+  output to terminal (as opposed to a log file)
+2. Templates and a framework for running experiments:
+  * [experiments](experiments) - template + executable, and README explanation
+  of framework
+  * [simple example](./experiments/examples/simple) - a mock gridsearch
+  requiring *no dependencies*, a **very** quick and practical introduction to
+  the framework
+  * [mnist example](./experiments/examples/mnist) - conda + pytorch + GPUs
+  'realistic' gridsearch: can be easiliy edited and used as a basis for your 
+  experiments
 
-They mainly just parse the output of slurm commands, so should be easy to read and understand. The [documentation for slurm](https://slurm.schedmd.com/), in particular the [man pages](https://slurm.schedmd.com/man_index.html), explain all the options.
 
 ## Setup
+Make the scripts available in this folder runnable from anywhere by adding the
+folder containing them to the path. We recommend you do this using git so that
+you can recieve updates easily.
 
-Place these scripts in a folder and add that folder to your path e.g.
-
+Follow these commands: 
 ```{bash}
 cd ~
 mkdir git
 cd git
 git clone https://github.com/cdt-data-science/cluster-scripts.git
-echo "export PATH=/home/$USER/git/cluster-scripts:\$PATH" >> ~/.bashrc
+echo 'export PATH=/home/$USER/git/cluster-scripts:$PATH' >> ~/.bashrc
 source ~/.bashrc
 ```
 
-If instead of cloning the repo, you copied the files to a directory manually, make sure they are executable:
-```{bash}
-chmod u+x {cluster-status,down-gpus,free-gpus,gpu-usage,gpu-usage-by-node,whoson,jobinfo,longbois,interactive,killmyjobs,onallnodes} 
+You should now be able to run the scripts from anywhere when on the cluster.
+To check that this has worked, go somewhere else, then try some commands. For
+example:
+```
+cd ~
+gpu-usage -p
+> in_use  usable  total  free
+> 69      71      71     2
 ```
 
-You should now be able to run the scripts from anywhere when on the cluster.
-
-If you want to have job ID autocompletion for `scancel`, you need to source the `job-id-completion.sh` script:
-
+If you want to have job ID autocompletion for `scancel`, you need to source the
+`job-id-completion.sh` script:
 ```{bash}
 cd ~
 echo "source /home/$USER/git/cluster-scripts/job-id-completion.sh" >> ~/.bashrc
 source ~/.bashrc
 ```
 
-## Examples
+## Example usage
+These examples expect you to have followed the setup.
 
 * Get an interactive session
 ```
-(base) [albert]s0816700: interactive
+$ interactive
 Doing a --test-only to estimate wait time...
 srun: Job 455329 to start at 2019-05-01T14:56:10 using 1 processors on charles12
 
@@ -51,22 +80,15 @@ srun --time=01:00:00 --mem=2000 --cpus-per-task=1 --pty bash
 
 * Quickly identify free gpus for use
 ```
-(mg) [albert]s0816700: ./free-gpus 
-datetime             nodename   in_use  usable  total
-19/04/2019 10:47:43  charles01  1       2       2
-19/04/2019 10:47:43  charles02  0       2       2
-19/04/2019 10:47:43  charles07  0       2       2
-19/04/2019 10:47:43  charles08  0       2       2
-19/04/2019 10:47:43  charles09  0       2       2
-19/04/2019 10:47:43  charles10  0       2       2
-19/04/2019 10:47:43  charles14  3       4       4
-19/04/2019 10:47:43  charles17  3       4       4
-19/04/2019 10:47:43  charles19  3       4       4
+$ free-gpus 
+datetime             nodename   free
+21/11/2019 19:39:03  charles01  2
+
 ```
 
 * View whether nodes are down and why
 ```
-(mg) [albert]s0816700: ./down-gpus 
+$ down-gpus 
 datetime             nodename   in_use  usable  total
 19/04/2019 10:49:12  charles03  0       0       2
 
@@ -95,7 +117,7 @@ charles19  gpu:4  mixed  Unknown              none                           245
 
 * Identify people running jobs currently and their usage
 ```
-(mg) [albert]s0816700: ./whoson
+$ whoson
 sid       name                nr_jobs
 s1234456  Bob smith           2
 s8765423  Joe Bloggs          1
@@ -133,35 +155,82 @@ jobinfo -n charles04
 >    Power=
 ```
 
-* Kill all your jobs
+* Kill all your jobs (except 1)
 ```
-# Launch some jobs
-some_script=/mnt/cdtds_cluster_home/s0816700/git/melody_gen/scripts/slurm_blankjob.sh
-for ii in {1..8}; do 
-  sbatch --time=05:00 --nodelist=charles01 --cpus-per-task=8 --mem=2000 $some_script 100
-done
-```
-
-```
-# Kill em
-killmyjobs
-> killing jobs in queue as well as running jobs
-> killing 454218 454219 454220 454221 454214 454215 454216 454217
+$ # Launch some jobs
+$ parallel 'sbatch --nodelist=charles02 --time=05:00 --cpus-per-task=1 --mem=2000 --wrap "sleep 30" --job-name=sleeping{}' ::: {1..10}
+Submitted batch job 610800
+Submitted batch job 610801
+Submitted batch job 610802
+Submitted batch job 610803
+Submitted batch job 610804
+Submitted batch job 610805
+Submitted batch job 610806
+Submitted batch job 610807
+Submitted batch job 610808
+Submitted batch job 610809
+$ myjobs
+  JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+ 610800 cdtgpuclu sleeping s0816700  R       0:04      1 charles02
+ 610801 cdtgpuclu sleeping s0816700  R       0:04      1 charles02
+ 610802 cdtgpuclu sleeping s0816700  R       0:04      1 charles02
+ 610803 cdtgpuclu sleeping s0816700  R       0:04      1 charles02
+ 610804 cdtgpuclu sleeping s0816700  R       0:04      1 charles02
+ 610805 cdtgpuclu sleeping s0816700  R       0:04      1 charles02
+ 610806 cdtgpuclu sleeping s0816700  R       0:04      1 charles02
+ 610807 cdtgpuclu sleeping s0816700  R       0:04      1 charles02
+ 610808 cdtgpuclu sleeping s0816700  R       0:04      1 charles02
+ 610809 cdtgpuclu sleeping s0816700  R       0:04      1 charles02
+ 
+$ # Kill em
+$ killmyjobs -e 610809
+killing jobs in queue as well as running jobs
+excluding 610809
+killing 610800 610801 610802 610803 610804 610805 610806 610807 610808
 ```
 
 or
 
 ```
-# Only kill ones running (leave ones in queue alone)
-killmyjobs -g
-> not killing jobs in queue
-> killing 454206 454207 454208 454209
+$ # Only kill ones running (leave ones in queue alone)
+$ killmyjobs -g
+not killing jobs in queue
+killing 454206 454207 454208 454209
 ```
 
-* Run a job on every node in the cluseter - useful for something like changing data on scratch spaces
+* Run a job on every node in the cluster - useful for something like changing
+data on scratch spaces
 ```
 some_script=/mnt/cdtds_cluster_home/s0816700/git/melody_gen/scripts/slurm_diskspace.sh
 onallnodes $some_script
 ```
 
-The scripts in the gridengine directory are from the previous scheduler sytem, and won't work with SLURM.
+* Quickly run commands on nodes inline and return output to console
+```
+for ii in {06..08}; do
+  echo --------
+  echo damnii$ii
+  sinline -n damnii$ii \
+    -c 'du -sh /disk/scratch/* 2>/dev/null | sort -rh' \
+    -s '--partition=PGR-Standard'
+done
+> --------
+> damnii06
+> Submitted batch job 666168
+> 108K	/disk/scratch/bob
+> 4.0K	/disk/scratch/greg
+> 4.0K	/disk/scratch/alice
+> --------
+> damnii07
+> Submitted batch job 666169
+> 428K	/disk/scratch/bob
+> 4.0K	/disk/scratch/greg
+> 4.0K	/disk/scratch/alice
+> --------
+> damnii08
+> Submitted batch job 666170
+> 84M	/disk/scratch/bob
+> 4.0K	/disk/scratch/greg
+> 4.0K	/disk/scratch/veronica
+> 4.0K	/disk/scratch/alice
+```

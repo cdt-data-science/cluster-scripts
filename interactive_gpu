@@ -10,7 +10,7 @@ if [ "$HOSTNAME" = "uhtred.inf.ed.ac.uk" ]; then
   default_time="02:00:00"
 fi
 
-default_args="--time=${default_time} --mem=14000 --cpus-per-task=4"
+default_args="--time=${default_time} --mem=14000 --cpus-per-task=4 --gres=gpu:1"
 
 print_welcome () {
   cat << EOM
@@ -50,6 +50,8 @@ EOM
 
 print_usage () {
   cat << EOM
+
+Identical to interactive, except gets you a node with a gpu too.
 
 A shortcut to get you an interactive session. Will attempt to get a session on
 a node which is in a partition with 'interactive' in its name. You can hit
