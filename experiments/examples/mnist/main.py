@@ -78,7 +78,7 @@ def test(args, model, device, test_loader):
     return test_loss, accuracy
 
 
-def main():
+def construct_parser():
     # Training settings
     parser = argparse.ArgumentParser(description='PyTorch MNIST Example')
     parser.add_argument('--batch-size', type=int, default=64, metavar='N',
@@ -102,11 +102,13 @@ def main():
                         'input data for the model to read')
     parser.add_argument('-o', '--output', required=True, help='Path to the '
                         'directory to write output to')
-    
-    args = parser.parse_args()
-    
-    model_name = '_'.join([str(vv) for vv in vars(args).values()])
-    
+    return parser
+ 
+
+def main(args):
+    config_args = [str(vv) for kk, vv in vars(args).items()
+                   if kk not in ['input', 'output']]
+    model_name = '_'.join(config_args)
     use_cuda = not args.no_cuda and torch.cuda.is_available()
     if not args.no_cuda and not use_cuda:
         raise ValueError('You wanted to use cuda but it is not available. '
@@ -149,5 +151,8 @@ def main():
     
     log_fh.close()
 
+
 if __name__ == '__main__':
-    main()
+    parser = construct_parser()
+    args = parser.parse_args()
+    main(args)
