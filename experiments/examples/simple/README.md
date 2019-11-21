@@ -35,6 +35,9 @@ ssh ${USER}@${cluster_name}.inf.ed.ac.uk
 # Run this slurm command to be allocated to a node in the default partition
 # We have set a maximum time and a few other constraints:
 srun --time=02:00:00 --mem=4000 --cpus-per-task=1 --pty bash
+
+# You can also use our shortcut command which essentially does the above!
+interactive
 ```
 
 When you are finished, execute the `exit` command to return to the headnode.
