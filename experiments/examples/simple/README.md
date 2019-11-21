@@ -104,8 +104,8 @@ Again have a look at the file you're going to run (either on the server with
 e.g. `cat gen_experiment.py` or in your browser
 [gen_experiment.py](gen_experiment.py)).
 
-In your terminal, change the directory to here, and run the script to make
-the experiment file. Have a look at the file!
+In your terminal, change directory as below, run the script to make
+the experiment file, and a look at the file:
 ```
 cd $repo_dir/experiments/examples/simple
 python3 gen_experiment.py
@@ -135,8 +135,9 @@ it is sent to. We are going to use it in 'array mode'.
 
 We need to make a bash script which:
 1. configures any slurm options we want to use
-1. moves data from the DFS to the node we're on to the scratch space of the
-   node we are allocated
+1. moves data from the Distributed File System (DFS - available on all nodes)
+   to the scratch space of the node slurm has allocated the job to (e.g.
+   `/disk/scratch` - which is only available on this specific node)
 1. runs one of the lines in experiments.txt
 
 You're in luck, because we have made you just such a script! Have a look at
