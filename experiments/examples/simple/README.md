@@ -224,7 +224,8 @@ rm slurm-*.log
     `/home/${USER}/git/cluster-scripts/experiments/examples/simple/data/input.zip`
     points to the distributed filesystem whichever node you are on
 1. where does the python script read the data from?
-    * The scratch node of node which the job gets allocated to
+    * The scratch space of node which the job gets allocated to e.g. the path
+    `/disk/scratch/${USER}/...` which is only accessible from this node
 1. how did the data get there?
     * In slurm_arrayjob.sh, `rsync` moves the zip file over, and `unzip`
     unzips the zip file
