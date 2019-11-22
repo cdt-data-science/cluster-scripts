@@ -69,12 +69,13 @@ if [ -z "${sbatch_args}" ]; then
   sbatch_args="--time=00:30:00"
 fi
 
-echo '#!/bin/bash' > /tmp/bash_script.sh 
-echo '#SBATCH -o sbatch_stdout.log' >> /tmp/bash_script.sh  
-echo '#SBATCH -e sbatch_stderr.log' >> /tmp/bash_script.sh  
-echo "${cmd}" >> /tmp/bash_script.sh
+echo '#!/bin/bash' > /tmp/scription.sh 
+echo '#SBATCH -o sbatch_stdout.log' >> /tmp/scription.sh  
+echo '#SBATCH -e sbatch_stderr.log' >> /tmp/scription.sh  
+echo "${cmd}" >> /tmp/scription.sh
+chmod u+x /tmp/scription.sh # make sure it is executable
 
-sbatch --wait ${sbatch_args} -w ${node} /tmp/bash_script.sh
+sbatch --wait ${sbatch_args} -w ${node} /tmp/scription.sh
 wait
 
 cat sbatch_stdout.log >&1
@@ -83,5 +84,5 @@ cat sbatch_stderr.log >&2
 # Clean up
 if [ "${cleanup}" -eq "1" ]; then
   rm sbatch_std{out,err}.log
-  rm /tmp/bash_script.sh
+  rm /tmp/scription.sh
 fi
