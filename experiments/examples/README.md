@@ -7,6 +7,22 @@ is to give you the quickest possible **practical** introduction to the
 cluster setup, slurm, and running an experiment with our frameword. It
 shouldn't take you more than 20 minutes.
 
+If you are on your laptop, remember you don't even need to set up a VPN to
+log in to your cluster machine. First ssh to an ssh gateway box, then ssh to
+a cluster machine. For example:
+
+```
+# Start on a computer connected to any wi-fi you like
+
+ssh s1234567@staff.ssh.inf.ed.ac.uk
+# you're now on the staff ssh gateway box, inside the informatics network
+
+ssh cdtcluster
+# you're now on the cdtcluster head node
+```
+
+More information available here: http://computing.help.inf.ed.ac.uk/external-login
+
 
 ## `./mnist`
 Will allow you to test whether you're successfully using a GPU! It's based on
