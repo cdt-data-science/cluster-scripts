@@ -8,6 +8,7 @@
   * `free-gpus` - location of free gpus and how many
   * `down-gpus` - location of gpus which are down, and full information
   * `whoson` - which users are logged on and running how many jobs
+  * `clusterspec` - print out the name, partition, CPUs, GPUs and RAM of every node.
 * information about running jobs:
   * `myjobs` - prints all your running jobs (`squeue -u ${USER}`)
   * `jobinfo` - information per user or node about running jobs
