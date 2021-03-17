@@ -1,5 +1,0 @@
-#!/bin/bash
-
-# Shortcut for printing out the number of CPUs, RAM and GPU specification of each node in a cluster
-
-sinfo -N -o "Name={ %10N } Partition={ %12R } CPUs={ %3c } Mem={ %7m } GPUs={ %G }"
