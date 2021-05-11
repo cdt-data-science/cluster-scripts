@@ -7,13 +7,12 @@ default_part="cdtgpucluster"
 
 # Exceptions to defaults
 if [ "$HOSTNAME" = "uhtred.inf.ed.ac.uk" ]; then
-  default_time="08:00:00"
   default_part="PGR-Standard"
 elif [ "$HOSTNAME" = "escience6.inf.ed.ac.uk" ]; then
   default_part="ILCC_CPU"
 fi
 
-default_args="--partition=${default_part} --time=${default_time} --mem=14000 --cpus-per-task=4 --gres=gpu:1"
+default_args="--partition=${default_part} --time=${default_time} --mem=14000 --cpus-per-task=4"
 
 print_welcome () {
   cat << EOM
@@ -95,7 +94,6 @@ get_interactive_session() {
   srun ${srun_args} --pty bash
 }
 
-
 if [ $# -eq 0 ]; then
   args=$default_args
 else
@@ -105,8 +103,9 @@ else
   exit 0  # <-------------- EXIT 1 (user specifies args)
 fi
 
-interactive_partitions=`sinfo -o %R -h | grep -i interactive`
-if [ -z "$interactive_partitions" ]; then
+echo $args
+interactive_partitions=`sinfo -o %R -h | { grep -i interactive || :;}`
+if [[ -z "$interactive_partitions" ]]; then
   echo "No partitions found with 'interactive' in their name"
   echo "Attempting to get a session on the default partition"
   get_interactive_session ${args}
