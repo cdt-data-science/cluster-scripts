@@ -28,7 +28,7 @@ export SCRATCH_HOME=/disk/scratch/${USER}
 export DATA_HOME=${PWD}/data
 export DATA_SCRATCH=${SCRATCH_HOME}/pgr/data
 mkdir -p ${SCRATCH_HOME}/pgr/data
-rsync --archive --update --compress --progress ${DATA_HOME} ${DATA_SCRATCH}
+rsync --archive --update --compress --progress ${DATA_HOME}/ ${DATA_SCRATCH}
 
 # ====================
 # Run training. Here we use src/gpu.py

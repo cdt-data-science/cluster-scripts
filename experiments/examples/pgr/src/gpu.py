@@ -19,7 +19,7 @@ class MiniModel(nn.Module):
 
 def read_textfile(filepath, encoding="utf-8"):
 	with open(filepath, mode="r", encoding=encoding) as fh:
-		data = [torch.Tensor([float(l.strip())]) for l in fh]
+		data = [torch.Tensor([float(l.strip())]).cuda() for l in fh]
 	return data
 
 def main(args):
@@ -32,7 +32,6 @@ def main(args):
 
 	# Load data and move to GPU
 	data = read_textfile(args.data_path)
-	data = data.cuda()
 
 	# Forward for each element of data
 	# This is not how we would actually do forward processing but demonstrates GPU operation
