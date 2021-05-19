@@ -1,6 +1,6 @@
 #!/bin/bash
-#SBATCH -o /home/%u/slogs/sl_%A_%a.out
-#SBATCH -e /home/%u/slogs/sl_%A_%a.out
+#SBATCH -o /home/%u/slogs/sl_%A.out
+#SBATCH -e /home/%u/slogs/sl_%A.out
 #SBATCH -N 1	  # nodes requested
 #SBATCH -n 1	  # tasks requested
 #SBATCH --gres=gpu:1  # use 1 GPU

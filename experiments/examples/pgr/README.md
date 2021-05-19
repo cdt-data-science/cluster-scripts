@@ -158,7 +158,6 @@ Now if we check for GPUs, we can see we have access to one (device #0):
 
 ```
 $ nvidia-smi
-
 ```
 
 In this state, logged into a node with a GPU, we could start debugging a model that isn't working properly or prototype an experiment before submitting to `sbatch`. We will now look at submitting and monitoring jobs. 
@@ -174,8 +173,8 @@ sbatch simple_experiment.sh
 ```
 This will add the job to the queue and report a Job ID for monitoring. 
 ```
-
-
+sbatch simple_experiment.sh
+Submitted batch job 1292804
 ```
 
 We can also add arguments to `sbatch` to control the parameters of the job:
@@ -197,7 +196,7 @@ If you run `ls` in your current directory, you will find a new file called `slur
 We can monitor the job as it happens using `watch`:
 
 ```
-watch -n 0.5 tail -n 30 slurm-XXXX.out
+watch -n 0.5 tail -n 30 slurm-1292804.out
 ```
 
 ### A more advanced experiment with a GPU using `advanced_experiment.sh`
