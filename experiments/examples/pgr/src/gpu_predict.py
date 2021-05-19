@@ -8,7 +8,7 @@ from gpu import MiniModel
 parser = argparse.ArgumentParser()
 
 parser.add_argument("--data_path", type=str, required=True, help="Data location")
-parser.add_argument("--output_dir", type=str, required=True, help="Output directory")
+parser.add_argument("--model_dir", type=str, required=True, help="Model directory")
 
 def read_textfile(filepath, encoding="utf-8"):
 	with open(filepath, mode="r", encoding=encoding) as fh:
@@ -17,7 +17,7 @@ def read_textfile(filepath, encoding="utf-8"):
 
 def main(args):
 	# Declare model
-	model_location = f"{args.output_dir}/model.th"
+	model_location = f"{args.model_dir}/model.th"
 	model = torch.load(model_location)
 
 	# Move model to GPU
