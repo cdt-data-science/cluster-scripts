@@ -34,7 +34,7 @@ rsync --archive --update --compress --progress ${DATA_HOME}/ ${DATA_SCRATCH}
 # Run training. Here we use src/gpu.py
 # ====================
 echo "Creating directory to save model weights"
-export OUTPUT_DIR=${SCRATCH_HOME}/pgr/output
+export OUTPUT_DIR=${SCRATCH_HOME}/pgr/example
 mkdir -p ${OUTPUT_DIR}
 
 # This script does not actually do very much. But it does demonstrate the principles of training
@@ -52,7 +52,7 @@ python src/gpu_predict.py \
 # ====================
 # RSYNC data from /disk/scratch/ to /home/. This moves everything we want back onto the distributed file system
 # ====================
-OUTPUT_HOME=${PWD}/exps/output
+OUTPUT_HOME=${PWD}/exps/
 mkdir -p ${OUTPUT_HOME}
 rsync --archive --update --compress --progress ${OUTPUT_DIR} ${OUTPUT_HOME}
 
