@@ -36,3 +36,10 @@ take a couple of hours because it involves:
 
 ...so grab tea/coffee making paraphernalia. However, once the setup is all done
 you can hopefully use this as a basis for your experiments right away.
+
+## `./pgr`
+A self-contained demo for PGR cluster demonstration (May 2021).
+
+## `./nlp`
+A self-contained demo for ILCC Cluster. Built for DR-NLP Introduction October 2021.
+
