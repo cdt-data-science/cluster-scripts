@@ -4,7 +4,7 @@
 
 ### Agenda:
 * What is `cluster-scripts`?
-* Opening up the PGR Cluster
+* Opening up the ILCC Cluster
 * `squeue` and `sinfo`
 * Requesting an interactive session with `interactive` or `interactive_gpu`
 * Checking your GPU allocation with `nvidia-smi`
@@ -17,7 +17,7 @@
 
 ### Getting setup:
 
-As a rule of thumb, we shouldn't ever run process on the headnode (`uhtred.inf.ed.ac.uk`). This includes the CPU and disk intensive process of creating a Conda environment. **However**, the nodes in the `mlp` cluster *do not have direct Internet access* so we can't download packages if we are logged into a node. 
+As a rule of thumb, we shouldn't ever run process on the headnode (`escience6.inf.ed.ac.uk`). This includes the CPU and disk intensive process of creating a Conda environment. But it can be difficult to install Conda from a compute node so we will do this just once.
 
 1. Install miniconda3 (ideally this should have already been done _or_ see below.)
 2. Create a new Python environment called `pt`:
@@ -33,21 +33,21 @@ This repository is designed to help you out getting started and using Informatic
 
 See `../../README.md` for more information
 
-### Opening up the PGR Cluster
+### Opening up the ILCC Cluster
 
 Hopefully you are already here! You access the cluster via SSH like:
 ```
-ssh ${USER}@mlp.inf.ed.ac.uk # May need to enter your DICE password
+ssh ${USER}@ilcc-cluster.inf.ed.ac.uk # May need to enter your DICE password
 ```
 If you are working from home or outside of DICE, then you will probably want to authenticate using a Kerberos ticket:
 ```
 kinit ${USER}@INF.ED.AC.UK
 >>> Enter password......
-ssh -K ${USER}@mlp.inf.ed.ac.uk # The -K means authenticate with your Kerberos ticket
+ssh -K ${USER}@ilcc-cluster.inf.ed.ac.uk # The -K means authenticate with your Kerberos ticket
 ```
-After this, you will be logged onto `uhtred` which is the machine name for the head node (`uhtred` and `mlp` are interchangeable).
+After this, you will be logged onto `escience6` which is the machine name for the head node (`ilcc-cluster` and `escience6` are interchangeable).
 ```
-s1833057@uhtred:~$ # We are now logged in and ready to go
+s1833057@escience6:~$ # We are now logged in and ready to go
 ```
 
 ### `squeue` and `sinfo`
@@ -59,13 +59,17 @@ There are two useful commands that we will start looking at before we run a job.
 This will list all the jobs running on the cluster and those that are waiting to run:
 
 ```
-s1833057@uhtred:~$ squeue
+${USER}@escience6:~$ squeue | head
              JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
-           1292504 PGR-Stand susouhu. s2016005 PD       0:00      1 (Resources)
-           1292505 PGR-Stand susouhu. s2016005 PD       0:00      1 (Priority)
-           1292683 General_U train_le s1601283 PD       0:00      1 (ReqNodeNotAvail, UnavailableNodes:letha06)
-           1292126 PGR-Stand train.sh s1601283  R 3-18:55:02      1 damnii04
-           1292362 PGR-Stand train.sh s1601283  R 1-21:26:35      1 damnii12
+            147054   CDT_GPU temp_slu s1785140  R   19:43:32      1 strickland
+            147055   CDT_GPU temp_slu s1785140  R   19:43:32      1 strickland
+            147056   CDT_GPU temp_slu s1785140  R   19:43:32      1 strickland
+            147057   CDT_GPU temp_slu s1785140  R   19:43:32      1 strickland
+            147058   CDT_GPU     bash s2004019  R   19:43:14      1 strickland
+            147140  ILCC_CPU     bash   lperez  R    3:08:39      1 stkilda
+            147134  ILCC_CPU     bash   lperez  R    3:54:19      1 stkilda
+            147127  ILCC_CPU     bash   lperez  R    4:28:40      1 bravas
+            147126  ILCC_CPU     bash   lperez  R    4:33:23      1 bravas
            ...
 ```
 The first column gives you the ID of the job (important for tracking which of your jobs is doing what), then additional columns will indicate the Partition (more on this in a moment), the name of the script submitted with `sbatch`, the user who owns the job, the job status, the job runtime and finally the list of nodes running the job. 
@@ -83,30 +87,20 @@ squeue -u ${USER}
 
 2. [`sinfo`](https://slurm.schedmd.com/sinfo.html) - View information about the cluster configuration
 
-We have mentioned partitions briefly before, but what do they actually mean? In short, our clusters are organised into groups of nodes with different specifications and priorities. When we consider the "PGR Cluster", what we actually are referring to is the `PGR-Standard` partition of the `mlp` cluster because the PGR Cluster **shares a head node** with other clusters (note that there are plans to change this in the future and PGR will have it's own head node). Only PGR students should be allowed to use the PGR cluster nodes, so we treat this as a separate cluster and don't think about the other nodes/partitions in the cluster. 
+We have mentioned partitions briefly before, but what do they actually mean? In short, our clusters are organised into groups of nodes with different specifications and priorities. When we consider the "ILCC Cluster", what we actually are referring to is the a collection of servers linked together with a controlling "head" node (this is the `escience6` machine). The servers (with GPUs attached) are organised into "partitions", or groups, which each have different access permissions. You will all have access to the `ILCC_*` and `CDT_GPU` partitions. 
 
 If you want to get a good specification of a cluster, you can use `sinfo` to detail the partitions and nodes available:
 
 ```
-s1833057@uhtred:~$ sinfo
-PARTITION                 AVAIL  TIMELIMIT  NODES  STATE NODELIST
-Teach-Interactive            up    2:00:00      1  down* landonia25
-Teach-Interactive            up    2:00:00      1   idle landonia03
-Teach-Interactive            up    2:00:00      1   down landonia01
-Teach-Standard*              up    8:00:00      1  down* landonia24
-Teach-Standard*              up    8:00:00     14   idle landonia[04-06,08-10,12-16,20,22-23]
-Teach-Short                  up    4:00:00      2   idle landonia[02,18]
-Teach-LongJobs               up 3-08:00:00      5   idle landonia[07,11,17,19,21]
-General_Usage                up 3-08:00:00      1  down* meme
-General_Usage                up 3-08:00:00      1  alloc letha06
-General_Usage                up 3-08:00:00      5   idle letha[01-05]
-General_Usage_Interactive    up    2:00:00      1   idle letha01
-PGR-Standard                 up 7-00:00:00      1  down* damnii05
-PGR-Standard                 up 7-00:00:00      2  drain damnii[02,09]
-PGR-Standard                 up 7-00:00:00      1    mix damnii06
-PGR-Standard                 up 7-00:00:00      8  alloc damnii[01,03-04,07-08,10-12]
-CDT_Compute                  up 7-00:00:00     17  down* james[05-21]
-CDT_Compute                  up 7-00:00:00      4   idle james[01-04]
+${USER}@escience6:~$ sinfo
+PARTITION   AVAIL  TIMELIMIT  NODES  STATE NODELIST
+ILCC_GPU*      up 10-00:00:0      8    mix barre,duflo,greider,levi,mcclintock,moser,nuesslein,ostrom
+CDT_GPU        up 10-00:00:0      1    mix strickland
+CDT_GPU        up 10-00:00:0      1   idle arnold
+ILCC_CPU       up 10-00:00:0      2    mix bravas,stkilda
+ILCC_CPU       up 10-00:00:0      2   idle kinloch,rockall
+M_AND_I_GPU    up 10-00:00:0      5    mix buccleuch,chatelet,davie,elion,yonath
+M_AND_I_GPU    up 10-00:00:0      8   idle bonsall,gibbs,livy,nicolson,quarry,snippy,tangmere,tomorden
 ```
 
 If you want even more detail, look at the `cluster-status` script in the main repository. 
@@ -114,44 +108,44 @@ If you want even more detail, look at the `cluster-status` script in the main re
 
 ### Requesting an interactive session with `interactive` or `interactive_gpu`
 
-Now we are set up with a conda environment and we know how to check what jobs are running with `squeue`. Let us now investigate launching an interactive job to get direct access to a specific node in the `PGR-Standard` partition. 
+Now we are set up with a conda environment and we know how to check what jobs are running with `squeue`. Let us now investigate launching an interactive job to get direct access to a specific node in the `ILCC_GPU` partition. 
 
 As discussed before, this can be done using the `srun` command like so (we have added in some sensible arguments):
 ```
-$ srun --partition=PGR-Standard --time=08:00:00 --mem=14000 --cpus-per-task=4 --pty bash
+$ srun --partition=ILCC_GPU --time=08:00:00 --mem=14000 --cpus-per-task=4 --pty bash
 ```
 By running this, Slurm will assign you a session on a node in the partition:
 ```
 ...
 srun: job 1292779 queued and waiting for resources
 srun: job 1292779 has been allocated resources
-s1833057@damnii06:~/cluster-scripts$ 
+(base) ${USER}@barre:~$ 
 ```
 Remember that interactive sessions should only really be used for cleanup and debugging so I should _not_ start training my machine learning model after getting a session with `srun`. 
 
 Lets look at some of the features of this session: 
 
-- I can access the `/disk/scratch/` space for `damnii06`
+- I can access the `/disk/scratch/` space for `barre`
 ```
-s1833057@damnii06:~/cluster-scripts$ cd /disk/scratch/
-s1833057@damnii06:/disk/scratch$
+${USER}@barre:~/cluster-scripts$ cd /disk/scratch/
+${USER}@barre:/disk/scratch$
 ```
 - An interactive session is still a job (that is actually running the shell command). I can see this in `squeue`
 ```
-s1833057@damnii06:/disk/scratch$ squeue -u $USER
+(base) ${USER}@barre:/disk/scratch$ squeue -u $USER
              JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
-           1292779 PGR-Stand     bash s1833057  R       4:58      1 damnii06
+            147189  ILCC_GPU     bash s1833057  R       0:43      1 barre
 ```
 - I _might_ be able to do some debugging of the model, but first I need to check my GPU access by running `nvidia-smi`
 ```
-s1833057@damnii06:/disk/scratch$ nvidia-smi
+${USER}@barre:/disk/scratch$ nvidia-smi
 No devices were found
 ```
 
 This final command prints that no GPUs were found. The node still has GPUs, but our job has not been given access to them _because we did not ask for one_. To access a GPU, we need to remember the resource request argument `--gres=gpu:1`. Now look what happens if we re-run `srun` with this argument. You can exit this interactive session using `exit`. 
 
 ```
-$ srun --partition=PGR-Standard --time=08:00:00 --mem=14000 --cpus-per-task=4 --gres=gpu:1 --pty bash
+$ srun --partition=ILCC_GPU --time=08:00:00 --mem=14000 --cpus-per-task=4 --gres=gpu:1 --pty bash
 ```
 
 Now if we check for GPUs, we can see we have access to one (device #0):
@@ -167,7 +161,7 @@ In this state, logged into a node with a GPU, we could start debugging a model t
 
 Have a look at `simple_experiment.sh` which is a bash script running a really simple blob of Python code. We will try and run this example using `sbatch` just to get a feel for what happens when we submit a job. 
 
-To submit a job (assuming you are inside the `experiments/examples/pgr` directory):
+To submit a job (assuming you are inside the `experiments/examples/nlp` directory):
 ```
 sbatch simple_experiment.sh
 ```
@@ -179,14 +173,14 @@ Submitted batch job 1292804
 
 We can also add arguments to `sbatch` to control the parameters of the job:
 ```
-sbatch -N 1 -n 1 --mem=2000 --partition=PGR-Standard -t 12:00:00 --cpus-per-task=2 simple_experiment.sh
+sbatch -N 1 -n 1 --mem=2000 --partition=ILCC_GPU -t 12:00:00 --cpus-per-task=2 simple_experiment.sh
 
 # -N is number of nodes
 # -n is number of requested tasks
 # -mem is the RAM requirement in MB
-# --partition tells Slurm to put this into PGR Standard
-# -t is the requested job time (PGR jobs have a max time of 7 days)
-# --cpus-per-task is the number of CPU cores for your task (damnii nodes have 20 total)
+# --partition tells Slurm to put this into the selected cluster
+#-t is the requested job time (ILCC Cluster jobs have a max time of 10 days)
+# --cpus-per-task is the number of CPU cores for your task (Careful not to use all the CPUs on a machine)
 ```
 
 ### Submitting and monitoring a Slurm job
