@@ -124,15 +124,15 @@ Get some code to run mnist in pytorch and run it:
     > PARTITION          NODELIST                           TIMELIMIT
     > Teach-Interactive  landonia[01,03,25]                 2:00:00
     > …
-    > PGR-Interactive    damnii01                           2:00:00
+    > PGR-Standard       damnii[01-10]                      2:00:00
     > …
      ```
      - Use srun to get an interactive session on that partition. For example: 
      ```
-    srun --partition=PGR-Interactive --time=08:00:00 --mem=8000 --cpus-per-task=4 --pty bash
+    srun --partition=PGR-Standard --time=08:00:00 --mem=8000 --cpus-per-task=4 --pty bash
     ```
 2. Run example MNIST code:
-    - `cd ~/projects/examples/mnist`
+    - `cd ~/cluster-scripts/examples/mnist`
     - `conda activate pt`
     - `python main.py`
 
@@ -143,10 +143,10 @@ Please note: this is going to download data to the Distributed Filesystem (i.e. 
 ##### Interactive jobs (without a gpu)
 1. Launch a similar `srun` command using the `gres` command to request a GPU in your job:
     ```
-    srun --partition=PGR-Interactive --time=08:00:00 --mem=14000 --cpus-per-task=4 --gres=gpu:1 --pty bash
+    srun --partition=PGR-Standard --time=08:00:00 --mem=14000 --cpus-per-task=4 --gres=gpu:1 --pty bash
     ```
 2. Run example MNIST code:
-    - `cd ~/projects/examples/mnist`
+    - `cd ~/cluster-scripts/examples/mnist`
     - `conda activate pt`
     - `python main.py`
 
@@ -156,7 +156,7 @@ Please note: this is going to download data to the Distributed Filesystem (i.e. 
 
 Repeat the above but this time using an sbatch script (non-interactive session). The command `sbatch` has many of the same arguments as `srun`, for example, add `--gres=gpu:1` if you would like to use one gpu
 
-- `cd ~/projects/examples/mnist`
+- `cd ~/cluster-scripts/examples/mnist`
 - create a bash script, `mnist_expt.sh`, for slurm to run:
     ```
     #!/usr/bin/env bash
@@ -224,8 +224,8 @@ conda activate
 export AFS_HOME=/afs/inf.ed.ac.uk/user/${USER:0:3}/$USER
 
 # Add cluster-scripts to path for easy use (explained in README)
-export PATH=/home/${USER}/projects/cluster-scripts:$PATH
-source /home/${USER}/projects/cluster-scripts/job-id-completion.sh
+export PATH=/home/${USER}/cluster-scripts:$PATH
+source /home/${USER}/cluster-scripts/job-id-completion.sh
 
 # Useful auto args for ls
 alias ls='ls --color=auto'

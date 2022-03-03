@@ -35,6 +35,9 @@ ssh ${USER}@${cluster_name}.inf.ed.ac.uk
 # with a gpu.
 srun --time=08:00:00 --mem=14000 --cpus-per-task=2 --gres=gpu:1 --pty bash
 
+## For the PGR Cluster
+srun --time=08:00:00 --mem=14000 --cpus-per-task=2 --gres=gpu:1 --partition=PGR-Standard --pty bash
+
 # You can also use our shortcut command which essentially does the above!
 interactive_gpu
 ```
@@ -98,7 +101,7 @@ the headnode, which is bad practice in general:
 ```
 conda activate pt
 # If you cloned the repo somewhere else, change this the following line
-repo_home=/home/${USER}/git/cluster-scripts
+repo_home=/home/${USER}/cluster-scripts
 cd ${repo_home}/experiments/examples/mnist
 python download_data.py
 ls data/input
@@ -124,7 +127,7 @@ following these commands:
 ```
 interactive_gpu
 conda activate pt
-repo_home=/home/${USER}/git/cluster-scripts
+repo_home=/home/${USER}/cluster-scripts
 cd ${repo_home}/experiments/examples/mnist
 ```
 
@@ -265,8 +268,7 @@ Teach-Standard     landonia[04-10,12-17,19-20,22-24]  8:00:00
 Teach-Short        landonia[02,18]                    4:00:00
 Teach-LongJobs     landonia[11,21]                    3-08:00:00
 General_Usage      letha[01-06]                       3-08:00:00
-PGR-Interactive    damnii01                           2:00:00
-PGR-Standard       damnii[02-12]                      7-00:00:00
+PGR-Standard       damnii[01-12]                      7-00:00:00
 ```
 
 Even if there isn't a limit, it is much more curteous to other users for your

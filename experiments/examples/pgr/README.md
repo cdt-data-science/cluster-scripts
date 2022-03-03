@@ -185,7 +185,7 @@ sbatch -N 1 -n 1 --mem=2000 --partition=PGR-Standard -t 12:00:00 --cpus-per-task
 # -n is number of requested tasks
 # -mem is the RAM requirement in MB
 # --partition tells Slurm to put this into PGR Standard
-# -t is the requested job time (PGR jobs have a max time of 7 days)
+# -t is the requested job time (PGR jobs have a max time of 7 days)
 # --cpus-per-task is the number of CPU cores for your task (damnii nodes have 20 total)
 ```
 

@@ -98,7 +98,7 @@ conda activate ${CONDA_ENV_NAME}
 echo "Moving input data to the compute node's scratch space: $SCRATCH_DISK"
 
 # input data directory path on the DFS - change line below if loc different
-repo_home=/home/${USER}/git/cluster-scripts
+repo_home=/home/${USER}/cluster-scripts
 src_path=${repo_home}/experiments/examples/mnist/data/input
 
 # input data directory path on the scratch disk of the node

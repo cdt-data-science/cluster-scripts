@@ -49,9 +49,7 @@ $ sinfo
 > PARTITION         AVAIL  TIMELIMIT  NODES  STATE NODELIST
 > Teach-Interactive    up    2:00:00      3   idle landonia[01,03,25]
 > ...
-> PGR-Interactive      up    2:00:00      1  down* damnii01
-> ...
-$ srun --partition=PGR-Interactive ...
+$ srun --partition=PGR-Standard ...
 ```
 
 ### 1. Make a python script to run an experiment `train.py`
@@ -66,7 +64,7 @@ e.g. `cat train.py` or in your browser [train.py](train.py)).
 Try running the file with different options to see how it works:
 ```
 # edit this if you cloned the repo elsewhere
-repo_dir=/home/$USER/git/cluster-scripts
+repo_dir=/home/$USER/cluster-scripts
 cd $repo_dir/experiments/examples/simple
 
 # Print the man page
@@ -219,9 +217,9 @@ rm slurm-*.out
 ### 3.
 1. where is the data located on the distributed filesystem?
     * Well...right here! Specifically, if you cloned this git repo to
-    `~/git/cluster-scripts`, as recommended, this location has the same path
+    `~/cluster-scripts`, as recommended, this location has the same path
     on all the nodes, i.e.
-    `/home/${USER}/git/cluster-scripts/experiments/examples/simple/data/input.zip`
+    `/home/${USER}/cluster-scripts/experiments/examples/simple/data/input.zip`
     points to the distributed filesystem whichever node you are on
 1. where does the python script read the data from?
     * The scratch space of node which the job gets allocated to e.g. the path

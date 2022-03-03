@@ -26,7 +26,7 @@ different models, or running all your baselines.
 Add the script(s) in this directory to your path (essentially allows you to run
 `run_experiment` from anywhere):
 ```
-echo 'export PATH=/home/$USER/git/cluster-scripts/experiments:$PATH' >> ~/.bashrc
+echo 'export PATH=/home/$USER/cluster-scripts/experiments:$PATH' >> ~/.bashrc
 source ~/.bashrc
 ```
 
@@ -37,6 +37,8 @@ For a fuller explanation of these steps, see below or check out the
 *no dependencies*, a **very** quick introduction
 * [./examples/mnist](./examples/mnist) - conda + pytorch + GPUs real-life
 gridsearch: can be easiliy edited and used as a basis for your experiments
+* [./examples/nlp](./examples/nlp) - Tutorial for the NLP cluster (updated Oct 2021)
+* [./examples/pgr](./examples/pgr) - Tutorial for the PGR cluster (updated Mar 2022)
 
 The below explains usage of the template:
 

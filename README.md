@@ -39,10 +39,8 @@ you can recieve updates easily.
 Follow these commands: 
 ```{bash}
 cd ~
-mkdir git
-cd git
 git clone https://github.com/cdt-data-science/cluster-scripts.git
-echo 'export PATH=/home/$USER/git/cluster-scripts:$PATH' >> ~/.bashrc
+echo 'export PATH=/home/$USER/cluster-scripts:$PATH' >> ~/.bashrc
 source ~/.bashrc
 ```
 
@@ -60,7 +58,7 @@ If you want to have job ID autocompletion for `scancel`, you need to source the
 `job-id-completion.sh` script:
 ```{bash}
 cd ~
-echo "source /home/$USER/git/cluster-scripts/job-id-completion.sh" >> ~/.bashrc
+echo "source /home/$USER/cluster-scripts/job-id-completion.sh" >> ~/.bashrc
 source ~/.bashrc
 ```
 
@@ -202,7 +200,7 @@ killing 454206 454207 454208 454209
 * Run a job on every node in the cluster - useful for something like changing
 data on scratch spaces
 ```
-some_script=/mnt/cdtds_cluster_home/s0816700/git/melody_gen/scripts/slurm_diskspace.sh
+some_script=/mnt/cdtds_cluster_home/${USER}/melody_gen/scripts/slurm_diskspace.sh
 onallnodes $some_script
 ```
 

@@ -67,7 +67,7 @@ mkdir -p ${SCRATCH_HOME}
 echo "Moving input data to the compute node's scratch space: $SCRATCH_DISK"
 
 # input data directory path on the DFS
-proj_home=/home/${USER}/git/cluster-scripts  # you may need to change this
+proj_home=/home/${USER}/cluster-scripts  # you may need to change this
 src_path=${proj_home}/experiments/examples/simple/data/input
 
 # input data directory path on the scratch disk of the node
