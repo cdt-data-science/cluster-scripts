@@ -22,7 +22,7 @@ As a rule of thumb, we shouldn't ever run process on the headnode (`uhtred.inf.e
 1. Install miniconda3 (ideally this should have already been done _or_ see below.)
 2. Create a new Python environment called `pt`:
 ```
-conda create -y -n pt python=3 pytorch torchvision cudatoolkit=10.1 -c pytorch
+conda create -y -n pt python=3 pytorch torchvision torchaudio cudatoolkit=11.3 -c pytorch
 ```
 This should take about 10 minutes, but might be longer (especially since many of us are running this).
 
