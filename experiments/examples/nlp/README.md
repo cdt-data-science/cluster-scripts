@@ -17,12 +17,14 @@
 
 ### Getting setup:
 
+**Note**: read the [ILCC Cluster Quick Start Guide](../../guides/) and [ILCC Cluster Talk](../../guides/) **first** before this `README.md`. This `README.md` is meant to cover the **demo** part of the introductory lecture. 
+
 As a rule of thumb, we shouldn't ever run process on the headnode (`escience6.inf.ed.ac.uk`). This includes the CPU and disk intensive process of creating a Conda environment. But it can be difficult to install Conda from a compute node so we will do this just once.
 
 1. Install miniconda3 (ideally this should have already been done _or_ see below.)
 2. Create a new Python environment called `pt`:
 ```
-conda create -y -n pt python=3 pytorch torchvision cudatoolkit=10.1 -c pytorch
+conda create -y -n pt python=3 pytorch torchvision torchaudio cudatoolkit=11.3 -c pytorch
 ```
 This should take about 10 minutes, but might be longer (especially since many of us are running this).
 
