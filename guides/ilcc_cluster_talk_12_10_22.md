@@ -20,7 +20,7 @@ If you have any feedback then email me at [tom.sherborne@ed.ac.uk](mailto:tom.sh
 >>> torch.matmul(b,a)
 # Approximately 1B operations!
 ```
-If typical matrix multiplication is O(n^3) complexity but CPUs have few, high power processing cores.
+CPUs have few, high power processing cores.
 On a CPU, each product must be calculated sequentially leading to slow processing and sometimes intractable training. 
 
 Each operation is a relatively simple instruction so can this be sped up?
@@ -48,11 +48,11 @@ Each operation is a relatively simple instruction so can this be sped up?
 >>> a = torch.randn((1024,512))
 >>> b = torch.randn((2048,1024))
 >>> torch.matmul(b,a)
-# Approx 74.5 ms to compute
+7.39s to compute 1000x
 >>> a = a.cuda()
 >>> b = b.cuda()
 >>> torch.matmul(b,a)
-# Approx 29.2 ms to compute
+2.36s to compute 1000x
 ```
 
 - We use the [NVIDIA CUDA](https://developer.nvidia.com/cuda-zone) interface to integrate GPUs into our code.
@@ -70,7 +70,7 @@ Each operation is a relatively simple instruction so can this be sped up?
 
 ---
 
-### Typical Workflow
+### Workflow
 
 ![Workflow](./imgs/workflow.png)
 
@@ -176,6 +176,11 @@ Each operation is a relatively simple instruction so can this be sped up?
 
 - As CDT in NLP students, you have access to the [CSD3](https://docs.hpc.cam.ac.uk/hpc/index.html) cluster with more memory and GPUs.
 
+- Your access to CSD3 has a 1000h/month rolling usage limit. Check your usage with:
+
+```
+gbalance -s `date --date="-28 day" --rfc-3339=date` -u
+```
 ---
 
 ### Use `ssh` to access the head node
