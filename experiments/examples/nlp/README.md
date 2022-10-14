@@ -33,7 +33,7 @@ This should take about 10 minutes, but might be longer (especially since many of
 
 This repository is designed to help you out getting started and using Informatics clusters. Originally, it was created for Data Science CDT students but we have now mostly updated everything to work on any cluster (if something doesn't work, please let me know). 
 
-See `../../README.md` for more information
+See [`../../README.md`](../../README.md) for more information.
 
 ### Opening up the ILCC Cluster
 
@@ -77,19 +77,24 @@ ${USER}@escience6:~$ squeue | head
 The first column gives you the ID of the job (important for tracking which of your jobs is doing what), then additional columns will indicate the Partition (more on this in a moment), the name of the script submitted with `sbatch`, the user who owns the job, the job status, the job runtime and finally the list of nodes running the job. 
 
 The `(REASON)` field is mostly useful to understand why a job is in the queue: 
+
     - `(Resources)` means there is nothing currently available that can run this job.
-    - `(Priority)` means other jobs are most important.
+    - `(Priority)` means other jobs are more important.
     - `(ReqNodeNotAvail)` means a specific node is down so this job cannot start.
 
+In each case, the `(REASON)` does **not** mean your job _won't run_, just that it is currently not running. Once the conditions of the reason are resolved, your job will execute. There is no reason to suspect that your job will be indefinitely held in a queue until the end of time. The exception to this is if you request a configuration that does not exist on the cluster -- building a feasible specification for your experiments is part of your job. 
 
 If you want to see only **your own jobs**, then you can run:
 ```
 squeue -u ${USER}
 ```
 
+More arguments can be found in [the documentation]((https://slurm.schedmd.com/squeue.html)) or `man squeue`.
+
+
 2. [`sinfo`](https://slurm.schedmd.com/sinfo.html) - View information about the cluster configuration
 
-We have mentioned partitions briefly before, but what do they actually mean? In short, our clusters are organised into groups of nodes with different specifications and priorities. When we consider the "ILCC Cluster", what we actually are referring to is the a collection of servers linked together with a controlling "head" node (this is the `escience6` machine). The servers (with GPUs attached) are organised into "partitions", or groups, which each have different access permissions. You will all have access to the `ILCC_*` and `CDT_GPU` partitions. 
+We have mentioned **partitions** briefly before, but what do they actually mean? Our clusters are organised into groups of nodes with different specifications and priorities. Considering the `ILCC Cluster`, what we actually are referring to is the a collection of servers (i.e. compute nodes) linked together with a controlling "head" node (this is the `escience6` machine). The servers (with GPUs attached) are organised into "partitions", or groups, which each have different access permissions. You will all have access to the `ILCC_*` and `CDT_GPU` partitions. 
 
 If you want to get a good specification of a cluster, you can use `sinfo` to detail the partitions and nodes available:
 
@@ -179,15 +184,15 @@ sbatch -N 1 -n 1 --mem=2000 --partition=ILCC_GPU -t 12:00:00 --cpus-per-task=2 s
 
 # -N is number of nodes
 # -n is number of requested tasks
-# -mem is the RAM requirement in MB
+# --mem is the RAM requirement in MB
 # --partition tells Slurm to put this into the selected cluster
-#-t is the requested job time (ILCC Cluster jobs have a max time of 10 days)
+# -t is the requested job time (ILCC Cluster jobs have a max time of 10 days)
 # --cpus-per-task is the number of CPU cores for your task (Careful not to use all the CPUs on a machine)
 ```
 
 ### Submitting and monitoring a Slurm job
 
-If you run `ls` in your current directory, you will find a new file called `slurm-XXXX.out`. Since your job is running now as a background process on a compute node, the logs are no longer output to the SSH session. Instead, Slurm redirects all the output from your job to this file. If you run `cat` on it, you will see all the output since the job started.
+If you run `ls` in your current directory, you will find a new file called `slurm-XXXX.out`. Since your job is running now as a background process on a compute node, the logs are no longer output to the SSH session. Slurm redirects all the console logs from your job to this file. If you run this file through `cat`, you will see all the logs (`stdout` and `stderr`) since the job started.
 
 We can monitor the job as it happens using `watch`:
 
@@ -197,23 +202,22 @@ watch -n 0.5 tail -n 30 slurm-1292804.out
 
 ### A more advanced experiment with a GPU using `advanced_experiment.sh`
 
-Now look at `advanced_experiment.sh`, which is more complicated and better demonstrates many of the component stages we need in our Slurm jobs for Machine Learning. Notice the arguments at the start beginning with `#SBATCH`, this is a convenient way to pack your submission arguments into your experiment script without having to give them when you run `sbatch` as we did above.
+Now look at `advanced_experiment.sh`, which is more complicated and better demonstrates the components we need in our Slurm jobs for Machine Learning. Notice the arguments at the start beginning with `#SBATCH` -- this is a convenient way to pack your submission arguments into your experiment script without having to give them when you run `sbatch` as we did above.
 
 We can try submitting this script using `sbatch` as above:
 ```
 mkdir -p /home/${USER}/slogs
 sbatch advanced_experiment.sh
 ```
-As before, Slurm will notify us of a Job ID for monitoring. However, this won't appear in your current directory as we have created a new place for Slurm logs at `/home/${USER}/slogs/`. This is often more convenient than having log files randomly all over your user space.
+As before, Slurm will notify us of a Job ID for monitoring. However, this won't appear in your current directory as we have created a new place for Slurm logs at `/home/${USER}/slogs/`. This is often more convenient than having log files littering your user space. These files can get **big**, so it is worthwhile periodically flushing this folder. 
 
 You can check this jobs progress using:
 ```
 watch -n 0.5 tail -n 30 /home/${USER}/slogs/slurm-YYYY.out
 ```
+This example requires a GPU and sometimes the cluster is busy so this might end up queued. Hopefully, we can see this job running in action but you might have to wait until the cluster quietens down!
 
-This example requires a GPU and sometimes the cluster is busy so this might end up in queue. Hopefully, we can see this job running in action but you might have to wait until the cluster quietens down!
-
-### Finishing up
+### Finishing Up
 
 We have gone through a basic example of how to get stuff running on the cluster with Slurm. There is plenty more to learn and get to grips with and _now_ is a much better time to do this instead of _right before that important conference deadline_. There are two other example experiments in this repo for you to have a look at which give a more rigorous experiment outline for your future work. Hopefully this demo has given you the tools to get started running everything on the cluster. 
 

@@ -458,16 +458,22 @@ It is possible to request multiple nodes. But this might get very complicated an
 
 ### Getting help
 
-1. Join the Edinburgh Cluster Users Slack Group
-	- Link to be posted on Blackboard
-	- Crowdsourced help from other cluster users
-	- Channels for the PGR cluster and ILCC cluster
+1. `#computing` in the CDT in NLP Slack
+	- Peer support from other users
+	- Also useful if you want to help other people out!
+	- I (Sherborne), am not in this Slack org.
 
 2. [Submit Tickets to Computing Support](https://www.inf.ed.ac.uk/systems/support/form/) 🎫
 	- Try and be as specific as possible. 
 	- What do you think is the error? 
+	- What have you tried to fix the error?
+	- What compute node (i.e where) did the error occur?
 	- Is it reproducible? 
 	- What Slurm job # caused this?
+
+3. `#cluster` channel in the EdinburghNLP Element (Experimental in 2022)
+	- New platform for communication in EdinburghNLP
+	- Managed by [Pasquale Minervini](http://www.neuralnoise.com/) -- email to get access. 
 
 ---
 

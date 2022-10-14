@@ -27,7 +27,7 @@ def main(args):
 	model = MiniModel(input_dim=1, output_dim=10)
 
 	# Move model to GPU
-	assert torch.cuda.is_available()==True, "No GPU available. Check your Slurm configuration"
+	assert torch.cuda.is_available(), "No GPU available. Check your Slurm configuration"
 	model = model.cuda()
 
 	# Load data and move to GPU
