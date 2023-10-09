@@ -1,3 +1,4 @@
 .spyproject
 **/data/**
 experiments/examples/**/experiments.txt
+.DS_Store
