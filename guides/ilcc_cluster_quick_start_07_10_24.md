@@ -47,7 +47,7 @@ __At a minimum, it would be very helpful if you can do these THREE tasks:__
 ![Cluster Diagram](./imgs/cdt_cluster_diag.png)
 This is an approximate diagram of how the cluster is configured for a different cluster (`albert`). The Informatics cluster we are using today is set up similarly.
 
-- The initial node you log into is called the __head node__ (named `uhtred` at the time of writing) -- __do not__ run heavy processes on here. This node is only used for sending jobs to other nodes in the cluster.
+- The initial node you log into is called the __head node__ (named `uhtred` at the time of writing) --- __do not__ run heavy processes on here. This node is only used for sending jobs to other nodes in the cluster.
 - The filesystem you have access to when you log in is identical on all the nodes you can access -- it is a __distributed__ filesystem. As such, it is relatively slow (because it must appear the same everywhere)!
     - Avoid reading and writing files frequently on this filesystem.
     - Instead, when running a job on a node, use the scratch disk and only move files to the shared filesystem infrequently. The scratch disk is located at `/disk/scratch` normally.
@@ -56,7 +56,7 @@ This is an approximate diagram of how the cluster is configured for a different 
 
 ## Quick Bash Environment Setup
 
-1. There is now only one Informatics cluster, `mlp` (note that `ilcc-cluster` still works as an alias). Throughout this guide I will assume you have either set a variable called `CLUSTER_NAME` (or you'll just replace that in the instructions) e.g `export CLUSTER_NAME=mlp`.
+1. There is now only one Informatics cluster called `mlp` (note that `ilcc-cluster` still works as an alias). Throughout this guide I will assume you have either set a variable called `CLUSTER_NAME` (or you'll just replace that in the instructions) e.g `export CLUSTER_NAME=mlp`.
 
 2. Run this line to ssh into the cluster: `ssh ${USER}@${CLUSTER_NAME}.inf.ed.ac.uk`
 
