@@ -56,7 +56,7 @@ This is an approximate diagram of how the cluster is configured for a different 
 
 ## Quick Bash Environment Setup
 
-1. There is now only one Informatics cluster, and the head node is called `mlp` (note that `ilcc-cluster` still works as an alias). Throughout this guide I will assume you have either set a variable called `CLUSTER_NAME` (or you'll just replace that in the instructions) e.g `export CLUSTER_NAME=mlp`.
+1. There is now only one Informatics cluster, and the head node is called `mlp` (note that `ilcc-cluster` and `pgr-cluster` still work as an aliases). Throughout this guide I will assume you have either set a variable called `CLUSTER_NAME` (or you'll just replace that in the instructions) e.g `export CLUSTER_NAME=mlp`.
 
 2. Run this line to ssh into the cluster: `ssh ${USER}@${CLUSTER_NAME}.inf.ed.ac.uk`
 
@@ -191,7 +191,7 @@ Repeat the above but this time using an `sbatch` script (non-interactive session
 
 ## Example `.bashrc` file
 
-The file `~/.bashrc` contains configuration commands, and is executed every time you login to a `bash` shell. Different files get run depending on whether you’re logging in interactively, or non-interactively to a login or non-login shell. For more information, see: https://www.gnu.org/software/bash/manual/html_node/Bash-Startup-Files.html. 
+The file `~/.bashrc` contains configuration commands, and is executed every time you log in to a `bash` shell. Different files get run depending on whether you’re logging in interactively, or non-interactively to a login or non-login shell. For more information, see: https://www.gnu.org/software/bash/manual/html_node/Bash-Startup-Files.html. 
 
 For more information about bash start-up files for DICE machines, see http://computing.help.inf.ed.ac.uk/dice-bash. 
 
