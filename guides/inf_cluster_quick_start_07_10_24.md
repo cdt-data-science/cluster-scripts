@@ -1,4 +1,4 @@
-# Using GPUs for NLP in Informatics: Quick Start
+# Using GPUs in Informatics: Quick Start
 ## 07 October 2024
 ### Tom Sherborne (with updates from Frank Keller)
 
@@ -47,8 +47,8 @@ __At a minimum, it would be very helpful if you can do these THREE tasks:__
 ![Cluster Diagram](./imgs/cdt_cluster_diag.png)
 This is an approximate diagram of how the cluster is configured for a different cluster (`albert`). The Informatics cluster we are using today is set up similarly.
 
-- The initial node you log into is called the __head node__ (named `uhtred` at the time of writing) --- __do not__ run heavy processes on here. This node is only used for sending jobs to other nodes in the cluster.
-- The filesystem you have access to when you log in is identical on all the nodes you can access -- it is a __distributed__ filesystem. As such, it is relatively slow (because it must appear the same everywhere)!
+- The initial node you log into is called the __head node__ (named `uhtred` at the time of writing) - __do not__ run heavy processes on here. This node is only used for sending jobs to other nodes in the cluster.
+- The filesystem you have access to when you log in is identical on all the nodes you can access - it is a __distributed__ filesystem. As such, it is relatively slow (because it must appear the same everywhere)!
     - Avoid reading and writing files frequently on this filesystem.
     - Instead, when running a job on a node, use the scratch disk and only move files to the shared filesystem infrequently. The scratch disk is located at `/disk/scratch` normally.
 - Please skim read this for best practice: http://computing.help.inf.ed.ac.uk/cluster-tips
