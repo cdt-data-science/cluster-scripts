@@ -19,9 +19,9 @@ The rest of this guide is designed to help you understand how you can use the cl
 
 __At a minimum, it would be very helpful if you can do these THREE tasks:__
 
- 1. Check you can SSH into `ilcc-cluster.inf.ed.ac.uk`. This will probably need to be from a DICE machine or a machine within the Informatics VPN (setup help for this is below). 
+ 1. Check you can ssh into `mlp.inf.ed.ac.uk`. This will probably need to be from a DICE machine or a machine within the Informatics VPN (setup help for this is below). 
     - If you cannot access this machine, please file a [Support ticket](https://www.inf.ed.ac.uk/systems/support/form/). You’ll be limited during the talk/demo if you cannot experience the cluster for yourself.
-    - If you are not comfortable with shell access then read this [MIT guide](https://missing.csail.mit.edu/) for shells and [here](https://www.digitalocean.com/community/tutorials/how-to-use-ssh-to-connect-to-a-remote-server) for SSH.
+    - If you are not comfortable with shell access then read this [MIT guide](https://missing.csail.mit.edu/) for shells and [here](https://www.digitalocean.com/community/tutorials/how-to-use-ssh-to-connect-to-a-remote-server) for ssh.
 
  2. Clone the [cluster-scripts](https://github.com/cdt-data-science/cluster-scripts) repository into your own workspace using Git.
     - We will use resources within this repository during the session so make sure you have it now. 
@@ -31,7 +31,7 @@ __At a minimum, it would be very helpful if you can do these THREE tasks:__
     ```
 
  3. Install Anaconda within the cluster:
-    - The clusters can’t use the same environment as DICE, so you need to reinstall this for `ilcc-cluster.inf.ed.ac.uk`.
+    - The clusters can’t use the same environment as DICE, so you need to reinstall this for `mlp.inf.ed.ac.uk`.
     - More details are below but the gist is these two lines:
     ```
     wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh 
@@ -57,9 +57,9 @@ This is an approximate setup of how the cluster is arranged for a different clus
 
 ## Quick Bash Environment Setup
 
-1. Find the name of your cluster. For example, it may be `cdtcluster`, `mlp`, `ilcc-cluster`, see http://computing.help.inf.ed.ac.uk/cluster-computing for more. Throughout this guide I will assume you have either set a variable called `CLUSTER_NAME` (or you'll just replace that in the instructions) e.g `export CLUSTER_NAME=ilcc-cluster`.
+1. There is now only one Informatics cluster, `mlp` (note that `ilcc-cluster` still works as an alias). Throughout this guide I will assume you have either set a variable called `CLUSTER_NAME` (or you'll just replace that in the instructions) e.g `export CLUSTER_NAME=mlp`.
 
-2. Run this line to SSH into the cluster: `ssh ${USER}@${CLUSTER_NAME}.inf.ed.ac.uk`
+2. Run this line to ssh into the cluster: `ssh ${USER}@${CLUSTER_NAME}.inf.ed.ac.uk`
 
 3. Create a Bash profile file so that the correct Bash setup runs when you login:
     - `touch .bash_profile`
