@@ -60,29 +60,16 @@ This is an approximate diagram of how the cluster is configured for a different 
 
 2. Run this line to ssh into the cluster: `ssh ${USER}@${CLUSTER_NAME}.inf.ed.ac.uk`
 
-3. Create a Bash profile file so that the correct Bash setup runs when you login:
-    - `touch .bash_profile`
-    - Open the `.bash_profile` file and paste the following code into it. If we are using Vim:
-        - `vim .bash_profile`
-        - Press the `i` button so that you can insert text into the file (you'll see the word INSERT at the bottom of the screen)
-        - Paste:
-        ```
-        if [ -f ~/.bashrc ]; then
-            source ~/.bashrc
-        fi
-        ```
-        - Press ESC then `!wq` to exit Vim.
-    - If you don't know how to use any command line editor: try these steps to getting started with Vim [here](https://vim-adventures.com/).
-
-4. Install `miniconda3`:
+3. Install `miniconda3`:
     - Download and run Miniconda installer
     ```
     wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh 
     bash Miniconda3-latest-Linux-x86_64.sh
     ```
     - Accept the licensing terms during installation.
+	- At the end say "yes" to have your .bashrc updated so that Conda is automatically activated when you log in.
 
-5. Install the `cluster-scripts` repository containing useful scripts and the demos.
+4. Install the `cluster-scripts` repository containing useful scripts and the demos.
     - Git clone to your cluster user space
     ```
     git clone https://github.com/cdt-data-science/cluster-scripts
