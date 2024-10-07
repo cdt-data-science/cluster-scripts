@@ -114,10 +114,10 @@ All the examples below expect you have performed the prior setup.
 
 Make the conda environment. This can take a bit of time (it’s harder for the distributed filesystem to deal with lots of small files than for your local machine’s hard drive) - go get a cup of tea.
 
-1. Check local versions of cuda available - at time of writing cuda 10.1 is available: `ls -d /opt/cu*`. You should use this version for the `cudatoolkit=??.?` argument below.
+1. Check local versions of cuda available - at time of writing cuda 12.5.0 is the latest version available: `ls -d /opt/cu*`. You should use this version for the `cudatoolkit=??.?.?` argument below.
 
 2. Run the command to create a conda environment called `pt`:
-    `conda create -y -n pt python=3 pytorch torchvision torchaudio cudatoolkit=11.3 -c pytorch`  (more info about PyTorch installation here if this goes wrong: https://pytorch.org/get-started/locally/)
+    `conda create -y -n pt python=3 pytorch torchvision torchaudio cudatoolkit=12.5.0 -c pytorch`  (more info about PyTorch installation here if this goes wrong: https://pytorch.org/get-started/locally/)
 3. Activate the environment `conda activate pt`
 
 #### Get some code to run MNIST experiments.
@@ -132,17 +132,23 @@ Get some code to run MNIST in PyTorch and run it:
 1. Get an interactive session (you shouldn’t do processing on the head node)
      - Find partitions which are used for Interactive sessions (they'll have interactive in the name). For example:
      ```
-    $ sinfo -o '%R;%N;%l' | column -s';' -t
-    PARTITION    NODELIST                                                                                           TIMELIMIT
-    ILCC_GPU     barre,duflo,greider,levi,mcclintock,moser,nuesslein,ostrom                                         10-00:00:00
-    CDT_GPU      arnold,strickland                                                                                  10-00:00:00
-    ILCC_CPU     bravas,kinloch,rockall,stkilda                                                                     10-00:00:00
-    M_AND_I_GPU  bonsall,buccleuch,chatelet,davie,elion,gibbs,livy,nicolson,quarry,snippy,tangmere,tomorden,yonath  10-00:00:00
+$ sinfo -o '%R;%N' | column -s';' -t
+
+PARTITION          NODELIST
+Teach-Interactive  landonia[01,03]
+Teach-Standard     landonia[02,04-13,19-20]
+Teach-Short
+Teach-LongJobs     landonia[21-25]
+General_Usage      letha06,meme
+PGR-Standard       crannog[01-07],damnii[01-12]
+ILCC-Standard      barre,duflo,greider,levi,mcclintock,nuesslein
+ILCC-CDT           arnold,strickland
+MandI-Standard     bonsall,buccleuch,chatelet,davie,elion,gibbs,livy,nicolson,quarry,snippy,tangmere,tomorden,yonath
      ```
 
      - Use srun to get an interactive session on that partition. For example: 
      ```
-    srun --partition=ILCC_GPU --time=08:00:00 --mem=8000 --cpus-per-task=4 --pty bash
+    srun --partition=ILCC-Standard --time=08:00:00 --mem=8000 --cpus-per-task=4 --pty bash
     ```
 
 2. Run example MNIST code (you will find this very slow):
@@ -158,7 +164,7 @@ Please note: this is going to download data to the Distributed Filesystem (i.e. 
 
 1. Launch a similar `srun` command using the `gres` argument to request a GPU in your job:
     ```
-    srun --partition=ILCC_GPU --time=08:00:00 --mem=14000 --cpus-per-task=4 --gres=gpu:1 --pty bash
+    srun --partition=ILCC-Standard --time=08:00:00 --mem=14000 --cpus-per-task=4 --gres=gpu:1 --pty bash
     ```
 2. Run example MNIST code (should be much faster):
 
