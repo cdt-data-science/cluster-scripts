@@ -37,7 +37,7 @@ __At a minimum, it would be very helpful if you can do these THREE tasks:__
     wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh 
     bash Miniconda3-latest-Linux-x86_64.sh
     ```
-    - Installing Conda can be _very_ slow, so please get this done before we start.
+    - Installing Conda take a bit of time, so please get this done before we start.
     - Note that copying `${HOME}/miniconda3` between clusters typically breaks links and pathways. You should install `miniconda3` from scratch each time and then export and recreate each environment across clusters
     - You can use `virtualenv` or `poetry` if desired but I will assume that you know what you are doing / don't need help.
 
@@ -56,7 +56,7 @@ This is an approximate diagram of how the cluster is configured for a different 
 
 ## Quick Bash Environment Setup
 
-1. There is now only one Informatics cluster called `mlp` (note that `ilcc-cluster` still works as an alias). Throughout this guide I will assume you have either set a variable called `CLUSTER_NAME` (or you'll just replace that in the instructions) e.g `export CLUSTER_NAME=mlp`.
+1. There is now only one Informatics cluster, and the head node is called `mlp` (note that `ilcc-cluster` still works as an alias). Throughout this guide I will assume you have either set a variable called `CLUSTER_NAME` (or you'll just replace that in the instructions) e.g `export CLUSTER_NAME=mlp`.
 
 2. Run this line to ssh into the cluster: `ssh ${USER}@${CLUSTER_NAME}.inf.ed.ac.uk`
 
@@ -87,17 +87,16 @@ This is an approximate diagram of how the cluster is configured for a different 
     ```
     git clone https://github.com/cdt-data-science/cluster-scripts
     cd ./cluster-scripts
-    ```
-    - __Follow the instructions in `README.md`__
-
-6. Re-source your Bash profile
-    ```
+    echo 'export PATH=/home/$USER/cluster-scripts:$PATH' >> ~/.bashrc
     source ~/.bashrc
     ```
 
-7. You can now play around with commands on the cluster (try running `free-gpus`, `cluster-status`)
+6. You can now play around with commands on the cluster (try running `free-gpus`, `cluster-status`)
 
-8. You are ready to go!
+    - __For more information, have a look at the `README.md`__ in the `cluster-scripts` directory.
+
+
+7. You are ready to go!
 
 
 ## What's Next? Practical examples!
@@ -114,10 +113,10 @@ All the examples below expect you have performed the prior setup.
 
 Make the conda environment. This can take a bit of time (it’s harder for the distributed filesystem to deal with lots of small files than for your local machine’s hard drive) - go get a cup of tea.
 
-1. Check local versions of cuda available - at time of writing cuda 12.5.0 is the latest version available: `ls -d /opt/cu*`. You should use this version for the `cudatoolkit=??.?.?` argument below.
+1. Check local versions of cuda available - at time of writing cuda 11.8.0 available: `ls -d /opt/cu*`. You should use this version for the `cudatoolkit=??.?.?` argument below.
 
 2. Run the command to create a conda environment called `pt`:
-    `conda create -y -n pt python=3 pytorch torchvision torchaudio cudatoolkit=12.5.0 -c pytorch`  (more info about PyTorch installation here if this goes wrong: https://pytorch.org/get-started/locally/)
+    `conda create -y -n pt python=3 pytorch torchvision torchaudio cudatoolkit=11.8.0 -c pytorch`  (more info about PyTorch installation here if this goes wrong: https://pytorch.org/get-started/locally/)
 3. Activate the environment `conda activate pt`
 
 #### Get some code to run MNIST experiments.
@@ -129,25 +128,25 @@ Get some code to run MNIST in PyTorch and run it:
 
 ##### Interactive jobs (without a GPU)
 
-1. Get an interactive session (you shouldn’t do processing on the head node)
-     - Find partitions which are used for Interactive sessions (they'll have interactive in the name). For example:
-     ```
-$ sinfo -o '%R;%N' | column -s';' -t
-
-PARTITION          NODELIST
-Teach-Interactive  landonia[01,03]
-Teach-Standard     landonia[02,04-13,19-20]
-Teach-Short
-Teach-LongJobs     landonia[21-25]
-General_Usage      letha06,meme
-PGR-Standard       crannog[01-07],damnii[01-12]
-ILCC-Standard      barre,duflo,greider,levi,mcclintock,nuesslein
-ILCC-CDT           arnold,strickland
-MandI-Standard     bonsall,buccleuch,chatelet,davie,elion,gibbs,livy,nicolson,quarry,snippy,tangmere,tomorden,yonath
+1. Get an interactive session (you shouldn’t do processing on the head node).
+   - List all the partitions and nodes available:
+    ```
+    $ sinfo -o '%R;%N' | column -s';' -t
+    
+    PARTITION          NODELIST
+    Teach-Interactive  landonia[01,03]
+    Teach-Standard     landonia[02,04-13,19-20]
+    Teach-Short
+    Teach-LongJobs     landonia[21-25]
+    General_Usage      letha06,meme
+    PGR-Standard       crannog[01-07],damnii[01-12]
+    ILCC-Standard      barre,duflo,greider,levi,mcclintock,nuesslein
+    ILCC-CDT           arnold,strickland
+    MandI-Standard     bonsall,buccleuch,chatelet,davie,elion,gibbs,livy,nicolson,quarry,snippy,tangmere,tomorden,yonath
      ```
 
      - Use srun to get an interactive session on that partition. For example: 
-     ```
+    ```
     srun --partition=ILCC-Standard --time=08:00:00 --mem=8000 --cpus-per-task=4 --pty bash
     ```
 
