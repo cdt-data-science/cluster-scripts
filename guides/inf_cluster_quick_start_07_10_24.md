@@ -67,10 +67,9 @@ This is an approximate diagram of how the cluster is configured for a different 
     bash Miniconda3-latest-Linux-x86_64.sh
     ```
     - Accept the licensing terms during installation.
-	- At the end say "yes" to have your .bashrc updated so that Conda is automatically activated when you log in.
+	- At the end say "yes" to have your .bashrc updated so that Miniconda is automatically activated when you log in.
 
 4. Install the `cluster-scripts` repository containing useful scripts and the demos.
-    - Git clone to your cluster user space
     ```
     git clone https://github.com/cdt-data-science/cluster-scripts
     cd ./cluster-scripts
@@ -78,10 +77,7 @@ This is an approximate diagram of how the cluster is configured for a different 
     source ~/.bashrc
     ```
 
-6. You can now play around with commands on the cluster (try running `free-gpus`, `cluster-status`)
-
-    - __For more information, have a look at the `README.md`__ in the `cluster-scripts` directory.
-
+6. You can now play around with commands on the cluster (try running `free-gpus`, `cluster-status`).  __For more information, have a look at the `README.md`__ in the `cluster-scripts` directory.
 
 7. You are ready to go!
 
