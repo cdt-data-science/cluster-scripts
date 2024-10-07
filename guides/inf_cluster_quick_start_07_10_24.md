@@ -77,7 +77,7 @@ This is an approximate diagram of how the cluster is configured for a different 
     source ~/.bashrc
     ```
 
-6. You can now play around with commands on the cluster (try running `free-gpus`, `cluster-status`).  __For more information, have a look at the `README.md`__ in the `cluster-scripts` directory.
+6. You can now play around with commands on the cluster (try running `free-gpus`, `cluster-status`).  For more information, __have a look at the `README.md`__ in the `cluster-scripts` directory.
 
 7. You are ready to go!
 
@@ -134,7 +134,7 @@ Get some code to run MNIST in PyTorch and run it:
     ```
 
 2. Run example MNIST code (you will find this very slow):
-    - `cd ~/cluster-scripts/examples/mnist`
+    - `cd ~/projects/examples/mnist`
     - `conda activate pt`
     - `python main.py # Check this runs, but you can cancel it anytime with CTRL+C`
 
@@ -150,7 +150,7 @@ Please note: this is going to download data to the Distributed Filesystem (i.e. 
     ```
 2. Run example MNIST code (should be much faster):
 
-    - `cd ~/cluster-scripts/examples/mnist`
+    - `cd ~/projects/examples/mnist`
     - `conda activate pt`
     - `python main.py`
 
@@ -160,7 +160,7 @@ Please note: this is going to download data to the Distributed Filesystem (i.e. 
 
 Repeat the above but this time using an `sbatch` script (non-interactive session). The command `sbatch` has many of the same arguments as `srun`, for example, add `--gres=gpu:1` if you would like to use one gpu
 
-- `cd ~/cluster-scripts/examples/mnist`
+- `cd ~/projects/examples/mnist`
 - create a bash script, `mnist_expt.sh`, for slurm to run:
     ```
     #!/usr/bin/env bash
