@@ -191,7 +191,7 @@ Repeat the above but this time using an `sbatch` script (non-interactive session
 
 ## Example `.bashrc` file
 
-You can keep one, `~/.bashrc`, and make an additional` ~/.bash_profile` that just runs the `~/.bashrc` (as we did earlier). This file should get run every time you log in. Different files get run depending on whether you’re logging in interactively, or non interactively to a login or non-login shell. For more information, see: https://www.gnu.org/software/bash/manual/html_node/Bash-Startup-Files.html. 
+The file `~/.bashrc` contains configuration commands, and is executed every time you login to a `bash` shell. Different files get run depending on whether you’re logging in interactively, or non-interactively to a login or non-login shell. For more information, see: https://www.gnu.org/software/bash/manual/html_node/Bash-Startup-Files.html. 
 
 For more information about bash start-up files for DICE machines, see http://computing.help.inf.ed.ac.uk/dice-bash. 
 
