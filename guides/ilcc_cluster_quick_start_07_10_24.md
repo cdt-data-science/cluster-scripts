@@ -38,19 +38,18 @@ __At a minimum, it would be very helpful if you can do these THREE tasks:__
     bash Miniconda3-latest-Linux-x86_64.sh
     ```
     - Installing Conda can be _very_ slow, so please get this done before we start.
-    - Note that copying `${HOME}/miniconda3` between clusters typically breaks links and pathways. You should install `miniconda3` from scratch each time and then export and recreate each environment across clusters (guidance [here](ilcc_cluster_quick_start_13_9_22.md)).
+    - Note that copying `${HOME}/miniconda3` between clusters typically breaks links and pathways. You should install `miniconda3` from scratch each time and then export and recreate each environment across clusters
     - You can use `virtualenv` or `poetry` if desired but I will assume that you know what you are doing / don't need help.
 
 
 ## Important things to note first
 
 ![Cluster Diagram](./imgs/cdt_cluster_diag.png)
-This is an approximate setup of how the cluster is arranged for a different cluster (`albert`). The ILCC Cluster we are using today is set up similarly.
+This is an approximate diagram of how the cluster is configured for a different cluster (`albert`). The Informatics cluster we are using today is set up similarly.
 
-- The initial node you log into is called the __head node__ (named `escience6` at the time of writing) - __do not__ run heavy processes on here. This node is only used for sending jobs to other nodes in the cluster.
-- The filesystem you have access to when you log in is identical on all the nodes you can access - it is a __distributed__ filesystem. As such, it is very slow (because it must appear the same everywhere)!
+- The initial node you log into is called the __head node__ (named `uhtred` at the time of writing) -- __do not__ run heavy processes on here. This node is only used for sending jobs to other nodes in the cluster.
+- The filesystem you have access to when you log in is identical on all the nodes you can access -- it is a __distributed__ filesystem. As such, it is relatively slow (because it must appear the same everywhere)!
     - Avoid reading and writing files frequently on this filesystem.
-    - For the ILCC cluster, the file-system is not load-balanced. If you break it, it will go down quickly so be careful!
     - Instead, when running a job on a node, use the scratch disk and only move files to the shared filesystem infrequently. The scratch disk is located at `/disk/scratch` normally.
 - Please skim read this for best practice: http://computing.help.inf.ed.ac.uk/cluster-tips
 
