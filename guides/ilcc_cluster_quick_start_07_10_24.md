@@ -1,6 +1,6 @@
 # Using GPUs for NLP in Informatics: Quick Start
-## 11th October 2023
-### Tom Sherborne
+## 07 October 2024
+### Tom Sherborne (with updates from Frank Keller)
 
 This guide explains how to:
  - Log on to the cluster
@@ -12,7 +12,6 @@ This guide explains how to:
 	 - Running scripts on the cluster non-interactively (sbatch)
  - Set up jupyter notebooks to run on the cluster, but be easily accessible from anywhere
 
-**New**: The lecture and demo itself now have accompanying written notes available [here](./ilcc_cluster_talk_11_10_23.md)
 
 ## First Steps 
 
